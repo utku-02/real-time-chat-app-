@@ -1,17 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
-# Variables
-DOCKER_USER="grejs420"
-SERVICES=("user-service" "chat-service" "message-service" "auth-service")
-
-# Build, tag, and push each service
-for SERVICE in "${SERVICES[@]}"; do
-  echo "Building $SERVICE..."
-  docker-compose build $SERVICE
-
-  echo "Tagging $SERVICE..."
-  docker tag ${SERVICE} ${DOCKER_USER}/${SERVICE}:latest
-
-  echo "Pushing $SERVICE to Docker Hub..."
-  docker push ${DOCKER_USER}/${SERVICE}:latest
+services=("user-service" "chat-service" "message-service" "auth-service")
+for service in "${services[@]}"; do
+    docker build -t grejs420/$service:latest ./$service
+    docker push grejs420/$service:latest
 done
