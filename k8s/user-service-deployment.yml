@@ -14,19 +14,17 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: docker.io/grejs420/user-service:main
+        image: grejs420/user-service:latest
         ports:
         - containerPort: 3000
         env:
-        - name: MONGO_URL
-          value: mongodb://mongo:27017/your-database
-        resources:
-          limits:
-            cpu: "500m"
-            memory: "128Mi"
-          requests:
-            cpu: "10m"
-            memory: "64Mi"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-secrets
+              key: JWT_SECRET
+        - name: MONGODB_URI
+          value: mongodb://mongo:27017/userdb
 ---
 apiVersion: v1
 kind: Service
