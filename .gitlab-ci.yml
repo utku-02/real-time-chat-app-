@@ -26,41 +26,45 @@ build_user_service:
   only:
     - main
 
-build_chat_service:
-  stage: build
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
-    - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
+# Commented out until the chat service is implemented
+# build_chat_service:
+#   stage: build
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
+#     - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
+#   only:
+#     - main
 
-build_message_service:
-  stage: build
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
-    - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
+# Commented out until the message service is implemented
+# build_message_service:
+#   stage: build
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
+#     - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
+#   only:
+#     - main
 
-build_auth_service:
-  stage: build
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
-    - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
+# Commented out until the auth service is implemented
+# build_auth_service:
+#   stage: build
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
+#     - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
+#   only:
+#     - main
 
-build_api_gateway:
-  stage: build
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
-    - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
-  only:
-    - main
+# Commented out until the API gateway is implemented
+# build_api_gateway:
+#   stage: build
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
+#     - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
+#   only:
+#     - main
 
 test_user_service:
   stage: test
@@ -81,9 +85,10 @@ deploy:
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
     - kubectl apply -f k8s/user-service-deployment.yml
-    - kubectl apply -f k8s/chat-service-deployment.yml
-    - kubectl apply -f k8s/message-service-deployment.yml
-    - kubectl apply -f k8s/auth-service-deployment.yml
-    - kubectl apply -f k8s/api-gateway-deployment.yml
+    # Commented out until other services are implemented
+    # - kubectl apply -f k8s/chat-service-deployment.yml
+    # - kubectl apply -f k8s/message-service-deployment.yml
+    # - kubectl apply -f k8s/auth-service-deployment.yml
+    # - kubectl apply -f k8s/api-gateway-deployment.yml
   only:
     - main
