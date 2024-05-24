@@ -29,33 +29,31 @@ build_user_service:
   only:
     - main
 
-# Commented out until the chat service is implemented
-# build_chat_service:
-#   stage: build
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
-#     - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
-#   only:
-#     - main
+build_chat_service:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
+    - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - main
 
-# Commented out until the message service is implemented
-# build_message_service:
-#   stage: build
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
-#     - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
-#   only:
-#     - main
+build_message_service:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
+    - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - main
 
-# Commented out until the auth service is implemented
+# Uncomment and update these sections when the auth service and API gateway are implemented
 # build_auth_service:
 #   stage: build
 #   image: docker:latest
@@ -68,7 +66,6 @@ build_user_service:
 #   only:
 #     - main
 
-# Commented out until the API gateway is implemented
 # build_api_gateway:
 #   stage: build
 #   image: docker:latest
@@ -94,22 +91,46 @@ test_user_service:
   only:
     - main
 
+test_chat_service:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker rm -f chat-service || true
+    - docker run -d --name chat-service -p 3001:3001 $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep chat-service
+  only:
+    - main
+
+test_message_service:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker rm -f message-service || true
+    - docker run -d --name message-service -p 3002:3002 $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep message-service
+  only:
+    - main
+
 # Repeat similar test stages for other services...
 
 deploy:
   stage: deploy
-  image:
-    name: lachlanevenson/k8s-kubectl:latest
-    entrypoint: ["/bin/sh", "-c"]
+  image: lachlanevenson/k8s-kubectl:latest
   script:
     - kubectl config set-cluster default-cluster --server=$KUBE_URL
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
     - kubectl apply -f k8s/user-service-deployment.yml
-    # Commented out until other services are implemented
-    # - kubectl apply -f k8s/chat-service-deployment.yml
-    # - kubectl apply -f k8s/message-service-deployment.yml
+    - kubectl apply -f k8s/chat-service-deployment.yml
+    - kubectl apply -f k8s/message-service-deployment.yml
+    # Uncomment and update these sections when the auth service and API gateway are implemented
     # - kubectl apply -f k8s/auth-service-deployment.yml
     # - kubectl apply -f k8s/api-gateway-deployment.yml
   only:

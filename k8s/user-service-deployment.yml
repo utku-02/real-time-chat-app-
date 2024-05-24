@@ -1,4 +1,3 @@
-# k8s/user-service-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,11 +14,19 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: docker.io/grejs420/user-service:latest
+        image: docker.io/grejs420/user-service:main
         ports:
         - containerPort: 3000
-      imagePullSecrets:
-      - name: regcred
+        env:
+        - name: MONGO_URL
+          value: mongodb://mongo:27017/your-database
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "128Mi"
+          requests:
+            cpu: "10m"
+            memory: "64Mi"
 ---
 apiVersion: v1
 kind: Service
