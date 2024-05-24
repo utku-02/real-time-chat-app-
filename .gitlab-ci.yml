@@ -24,7 +24,7 @@ build_user_service:
     - docker build -t $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG ./user-service
     - docker push $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
   only:
-    - master
+    - main
 
 build_chat_service:
   stage: build
@@ -33,7 +33,7 @@ build_chat_service:
     - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
     - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
   only:
-    - master
+    - main
 
 build_message_service:
   stage: build
@@ -42,7 +42,7 @@ build_message_service:
     - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
     - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
   only:
-    - master
+    - main
 
 build_auth_service:
   stage: build
@@ -51,7 +51,7 @@ build_auth_service:
     - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
     - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
   only:
-    - master
+    - main
 
 build_api_gateway:
   stage: build
@@ -60,7 +60,7 @@ build_api_gateway:
     - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
     - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
   only:
-    - master
+    - main
 
 test_user_service:
   stage: test
@@ -69,7 +69,7 @@ test_user_service:
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep user-service
   only:
-    - master
+    - main
 
 # Repeat similar test stages for other services...
 
@@ -86,4 +86,4 @@ deploy:
     - kubectl apply -f k8s/auth-service-deployment.yml
     - kubectl apply -f k8s/api-gateway-deployment.yml
   only:
-    - master
+    - main
