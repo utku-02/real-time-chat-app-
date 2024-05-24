@@ -6,9 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY ../shared-utils ./shared-utils
-
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["node", "src/index.js"]

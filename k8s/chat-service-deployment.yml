@@ -18,20 +18,13 @@ spec:
         ports:
         - containerPort: 3001
         env:
-        - name: MONGODB_URI
-          value: "mongodb://mongo:27017/chatdb"
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
               name: auth-service-secrets
               key: JWT_SECRET
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "10m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: MONGODB_URI
+          value: mongodb://mongo:27017/chatdb
 ---
 apiVersion: v1
 kind: Service

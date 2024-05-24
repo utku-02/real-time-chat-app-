@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const authMiddleware = require('../shared-utils/authMiddleware');
 require('dotenv').config();
 
 const app = express();
@@ -35,10 +34,6 @@ app.post('/login', async (req, res) => {
 
   const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
   res.send({ token });
-});
-
-app.get('/protected', authMiddleware, (req, res) => {
-  res.send('This is a protected route');
 });
 
 app.listen(port, () => {

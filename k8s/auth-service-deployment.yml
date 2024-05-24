@@ -13,25 +13,18 @@ spec:
         app: auth-service
     spec:
       containers:
-      - name: auth-service
-        image: grejs420/auth-service:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: MONGODB_URI
-          value: "mongodb://mongo:27017/authdb"
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: auth-service-secrets
-              key: JWT_SECRET
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "10m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: auth-service
+          image: grejs420/auth-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secrets
+                  key: JWT_SECRET
+            - name: MONGODB_URI
+              value: mongodb://mongo:27017/authdb
 ---
 apiVersion: v1
 kind: Service
@@ -44,3 +37,4 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
+  type: ClusterIP
