@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const authMiddleware = require('./utils/authMiddleware');
+const authMiddleware = require('../shared-utils/authMiddleware');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const jwtSecret = process.env.JWT_SECRET || 'default_secret';
+const jwtSecret = process.env.JWT_SECRET;
 
 app.use(express.json());
 

@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+COPY ../shared-utils /usr/src/app/shared-utils
 
 EXPOSE 3000
 

@@ -14,12 +14,17 @@ spec:
     spec:
       containers:
       - name: message-service
-        image: docker.io/grejs420/message-service:latest
+        image: grejs420/message-service:latest
         ports:
         - containerPort: 3002
         env:
-        - name: MONGO_URI
-          value: "mongodb://mongo:27017/your-database-name"  # Update to match your database name
+        - name: MONGODB_URI
+          value: "mongodb://mongo:27017/messagedb"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-secrets
+              key: JWT_SECRET
         resources:
           requests:
             memory: "64Mi"
@@ -27,3 +32,15 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-service
+spec:
+  selector:
+    app: message-service
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
