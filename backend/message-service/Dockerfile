@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-COPY ../shared-utils ./shared-utils
+COPY ../shared-utils/authMiddleware.js ./shared-utils
 
 EXPOSE 3002
 
