@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
+const authMiddleware = require('./utils/authMiddleware');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
 app.use(express.json());
 
@@ -36,6 +37,11 @@ app.post('/login', async (req, res) => {
   res.send({ token });
 });
 
+app.get('/protected', authMiddleware, (req, res) => {
+  res.send('This is a protected route');
+});
+
 app.listen(port, () => {
   console.log(`Auth service listening on port ${port}`);
 });
+  
