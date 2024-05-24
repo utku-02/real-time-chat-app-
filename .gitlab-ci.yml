@@ -65,6 +65,18 @@ build_auth_service:
   only:
     - main
 
+build_api_gateway:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:latest ./backend/api-gateway
+    - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:latest
+  only:
+    - main
+
 test_user_service:
   stage: test
   image: docker:latest
@@ -131,7 +143,6 @@ deploy:
     - kubectl apply -f k8s/chat-service-deployment.yml
     - kubectl apply -f k8s/message-service-deployment.yml
     - kubectl apply -f k8s/auth-service-deployment.yml
-    # Uncomment and update these sections when the API gateway is implemented
-    # - kubectl apply -f k8s/api-gateway-deployment.yml
+    - kubectl apply -f k8s/api-gateway-deployment.yml
   only:
     - main

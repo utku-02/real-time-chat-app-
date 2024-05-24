@@ -1,30 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service
+  name: api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth-service
+      app: api-gateway
   template:
     metadata:
       labels:
-        app: auth-service
+        app: api-gateway
     spec:
       containers:
-        - name: auth-service
-          image: grejs420/auth-service:latest
+        - name: api-gateway
+          image: grejs420/api-gateway:latest
           ports:
             - containerPort: 3000
           env:
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: auth-service-secrets
-                  key: JWT_SECRET
-            - name: MONGODB_URI
-              value: mongodb://mongo:27017/authdb
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service:3000"
+            - name: USER_SERVICE_URL
+              value: "http://user-service:3000"
+            - name: CHAT_SERVICE_URL
+              value: "http://chat-service:3001"
+            - name: MESSAGE_SERVICE_URL
+              value: "http://message-service:3002"
           resources:
             requests:
               memory: "64Mi"
@@ -36,12 +37,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-service
+  name: api-gateway
 spec:
   selector:
-    app: auth-service
+    app: api-gateway
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-  type: ClusterIP
