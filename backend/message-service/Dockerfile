@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-COPY ../shared-utils /usr/src/app/shared-utils
+COPY ../shared-utils ./shared-utils
 
 EXPOSE 3002
 
