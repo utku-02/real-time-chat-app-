@@ -8,75 +8,23 @@ variables:
   CI_REGISTRY: https://index.docker.io/v1/
   CI_REGISTRY_USER: grejs420
   CI_REGISTRY_PASSWORD: rovgard1!
-  CI_REGISTRY_IMAGE_USER_SERVICE: docker.io/grejs420/user-service
-  CI_REGISTRY_IMAGE_CHAT_SERVICE: docker.io/grejs420/chat-service
-  CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
-  CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
-  CI_REGISTRY_IMAGE_API_GATEWAY: docker.io/grejs420/api-gateway
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
 
-build_user_service:
+build:
   stage: build
   image: docker:latest
   services:
     - docker:dind
-  script:
+  before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG ./user-service
-    - docker push $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
+    - chmod +x build_and_push.sh 
+  script:
+    - ./build_and_push.sh
   only:
     - main
 
-build_chat_service:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
-    - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
-
-build_message_service:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
-    - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
-
-# Uncomment and update these sections when the auth service and API gateway are implemented
-# build_auth_service:
-#   stage: build
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
-#     - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
-#   only:
-#     - main
-
-# build_api_gateway:
-#   stage: build
-#   image: docker:latest
-#   services:
-#     - docker:dind
-#   script:
-#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
-#     - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
-#   only:
-#     - main
 
 test_user_service:
   stage: test
@@ -85,7 +33,7 @@ test_user_service:
     - docker:dind
   script:
     - docker rm -f user-service || true
-    - docker run -d --name user-service -p 3000:3000 $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
+    - docker run -d --name user-service -p 3000:3000 grejs420/user-service:latest
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep user-service
   only:
@@ -98,7 +46,7 @@ test_chat_service:
     - docker:dind
   script:
     - docker rm -f chat-service || true
-    - docker run -d --name chat-service -p 3001:3001 $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
+    - docker run -d --name chat-service -p 3001:3001 grejs420/chat-service:latest
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep chat-service
   only:
@@ -111,17 +59,28 @@ test_message_service:
     - docker:dind
   script:
     - docker rm -f message-service || true
-    - docker run -d --name message-service -p 3002:3002 $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
+    - docker run -d --name message-service -p 3002:3002 grejs420/message-service:latest
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep message-service
   only:
     - main
 
-# Repeat similar test stages for other services...
+test_auth_service:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker rm -f auth-service || true
+    - docker run -d --name auth-service -p 3003:3003 grejs420/auth-service:latest
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep auth-service
+  only:
+    - main
 
 deploy:
   stage: deploy
-  image: 
+  image:
     name: lachlanevenson/k8s-kubectl:latest
     entrypoint: ["/bin/sh", "-c"]
   script:
@@ -132,8 +91,8 @@ deploy:
     - kubectl apply -f k8s/user-service-deployment.yml
     - kubectl apply -f k8s/chat-service-deployment.yml
     - kubectl apply -f k8s/message-service-deployment.yml
-    # Uncomment and update these sections when the auth service and API gateway are implemented
-    # - kubectl apply -f k8s/auth-service-deployment.yml
+    - kubectl apply -f k8s/auth-service-deployment.yml
+    # Uncomment and update these sections when the API gateway is implemented
     # - kubectl apply -f k8s/api-gateway-deployment.yml
   only:
     - main

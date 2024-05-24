@@ -1,22 +1,66 @@
-version: '3'
-services:
-  mongo:
-    image: mongo:4.2
-    ports:
-      - "27017:27017"
-    networks:
-      - chat-net
+version: '3.8'
 
+services:
   user-service:
     build:
-      context: ./user-service
+      context: ./backend/user-service
+    image: grejs420/user-service:latest
+    container_name: user-service
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/userdb
+      - PORT=3000
     ports:
       - "3000:3000"
     depends_on:
       - mongo
-    networks:
-      - chat-net
 
-networks:
-  chat-net:
-    driver: bridge
+  chat-service:
+    build:
+      context: ./backend/chat-service
+    image: grejs420/chat-service:latest
+    container_name: chat-service
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/chatdb
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+  message-service:
+    build:
+      context: ./backend/message-service
+    image: grejs420/message-service:latest
+    container_name: message-service
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/messagedb
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongo
+
+  auth-service:
+    build:
+      context: ./backend/auth-service
+    image: grejs420/auth-service:latest
+    container_name: auth-service
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/authdb
+      - JWT_SECRET=your_jwt_secret
+      - PORT=3003
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
