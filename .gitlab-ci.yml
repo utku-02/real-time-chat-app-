@@ -97,7 +97,7 @@ test_user_service:
 
 deploy:
   stage: deploy
-  image: bitnami/kubectl:latest
+  image: lachlanevenson/k8s-kubectl:latest
   script:
     - kubectl config set-cluster default-cluster --server=$KUBE_URL
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
