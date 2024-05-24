@@ -87,6 +87,7 @@ test_user_service:
   services:
     - docker:dind
   script:
+    - docker rm -f user-service || true
     - docker run -d --name user-service -p 3000:3000 $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep user-service
