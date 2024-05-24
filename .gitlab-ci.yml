@@ -19,8 +19,11 @@ variables:
 
 build_user_service:
   stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG ./user-service
     - docker push $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
   only:
@@ -29,8 +32,11 @@ build_user_service:
 # Commented out until the chat service is implemented
 # build_chat_service:
 #   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
 #   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 #     - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
 #     - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
 #   only:
@@ -39,8 +45,11 @@ build_user_service:
 # Commented out until the message service is implemented
 # build_message_service:
 #   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
 #   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 #     - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
 #     - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
 #   only:
@@ -49,8 +58,11 @@ build_user_service:
 # Commented out until the auth service is implemented
 # build_auth_service:
 #   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
 #   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 #     - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
 #     - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
 #   only:
@@ -59,8 +71,11 @@ build_user_service:
 # Commented out until the API gateway is implemented
 # build_api_gateway:
 #   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
 #   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 #     - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
 #     - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
 #   only:
@@ -68,6 +83,9 @@ build_user_service:
 
 test_user_service:
   stage: test
+  image: docker:latest
+  services:
+    - docker:dind
   script:
     - docker run -d --name user-service -p 3000:3000 $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
     - sleep 10 # Wait for the container to be fully up and running
@@ -79,6 +97,7 @@ test_user_service:
 
 deploy:
   stage: deploy
+  image: bitnami/kubectl:latest
   script:
     - kubectl config set-cluster default-cluster --server=$KUBE_URL
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
