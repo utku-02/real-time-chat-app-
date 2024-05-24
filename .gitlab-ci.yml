@@ -1,9 +1,89 @@
 stages:
+  - build
   - test
+  - deploy
 
-test_job:
+variables:
+  DOCKER_DRIVER: overlay2
+  CI_REGISTRY: https://index.docker.io/v1/
+  CI_REGISTRY_USER: grejs420
+  CI_REGISTRY_PASSWORD: rovgard1
+  CI_REGISTRY_IMAGE_USER_SERVICE: docker.io/grejs420/user-service
+  CI_REGISTRY_IMAGE_CHAT_SERVICE: docker.io/grejs420/chat-service
+  CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
+  CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
+  CI_REGISTRY_IMAGE_API_GATEWAY: docker.io/grejs420/api-gateway
+  KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
+  KUBE_TOKEN: $KUBE_TOKEN
+  KUBE_NAMESPACE: default
+
+build_user_service:
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG ./user-service
+    - docker push $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - master
+
+build_chat_service:
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG ./chat-service
+    - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - master
+
+build_message_service:
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG ./message-service
+    - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - master
+
+build_auth_service:
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG ./auth-service
+    - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:$CI_COMMIT_REF_SLUG
+  only:
+    - master
+
+build_api_gateway:
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG ./api-gateway
+    - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:$CI_COMMIT_REF_SLUG
+  only:
+    - master
+
+test_user_service:
   stage: test
   script:
-    - echo "This is a test job"
+    - docker run -d --name user-service -p 3000:3000 $CI_REGISTRY_IMAGE_USER_SERVICE:$CI_COMMIT_REF_SLUG
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep user-service
+  only:
+    - master
+
+# Repeat similar test stages for other services...
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
+    - kubectl apply -f k8s/user-service-deployment.yml
+    - kubectl apply -f k8s/chat-service-deployment.yml
+    - kubectl apply -f k8s/message-service-deployment.yml
+    - kubectl apply -f k8s/auth-service-deployment.yml
+    - kubectl apply -f k8s/api-gateway-deployment.yml
   only:
     - master
