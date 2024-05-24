@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd services || exit 1
+cd backend || exit 1
 
 services="user-service chat-service message-service auth-service"
 for service in $services; do
