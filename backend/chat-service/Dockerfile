@@ -6,8 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY src /usr/src/app/src
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD ["node", "src/index.js"]

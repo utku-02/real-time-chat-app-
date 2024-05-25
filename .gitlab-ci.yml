@@ -165,11 +165,14 @@ deploy:
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
+    - kubectl apply -f k8s/mongo-deployment.yml
     - kubectl apply -f k8s/user-service-deployment.yml
     - kubectl apply -f k8s/chat-service-deployment.yml
     - kubectl apply -f k8s/message-service-deployment.yml
     - kubectl apply -f k8s/auth-service-deployment.yml
     - kubectl apply -f k8s/api-gateway-deployment.yml
     - kubectl apply -f k8s/frontend-deployment.yml
+    - kubectl apply -f k8s/frontend-service.yaml
+    - kubectl apply -f k8s/my-ingress.yml
   only:
     - main
