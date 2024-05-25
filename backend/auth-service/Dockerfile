@@ -6,7 +6,6 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY src /usr/src/app/src
 
 EXPOSE 3000
 
