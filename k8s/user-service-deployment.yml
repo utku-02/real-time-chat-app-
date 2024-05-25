@@ -32,6 +32,8 @@ spec:
               key: JWT_SECRET
         - name: MONGODB_URI
           value: mongodb://mongo:27017/userdb
+        - name: BASE_URL
+          value: "/swwao.courses.orbit.au.dk/grp-6/user"
 ---
 apiVersion: v1
 kind: Service
@@ -44,4 +46,3 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-
