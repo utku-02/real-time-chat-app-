@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3002;
+const baseUrl = process.env.BASE_URL || '';
 
 app.use(express.json());
 
@@ -14,7 +15,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongo:27017/messagedb', {
   useUnifiedTopology: true,
 });
 
-app.post('/messages', authMiddleware, async (req, res) => {
+app.post(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
   const { receiverId, content } = req.body;
   const message = new Message({
     senderId: req.user.userId,
@@ -25,7 +26,7 @@ app.post('/messages', authMiddleware, async (req, res) => {
   res.status(201).send(message);
 });
 
-app.get('/messages', authMiddleware, async (req, res) => {
+app.get(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
   const messages = await Message.find({ $or: [{ senderId: req.user.userId }, { receiverId: req.user.userId }] });
   res.send(messages);
 });

@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const baseUrl = process.env.BASE_URL || '';
 const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
 app.use(express.json());
@@ -17,7 +18,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongo:27017/authdb', {
   useUnifiedTopology: true,
 });
 
-app.post('/register', async (req, res) => {
+app.post(`${baseUrl}/register`, async (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({ email, password: hashedPassword });
@@ -25,7 +26,7 @@ app.post('/register', async (req, res) => {
   res.status(201).send('User registered');
 });
 
-app.post('/login', async (req, res) => {
+app.post(`${baseUrl}/login`, async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(400).send('Invalid email or password');
@@ -37,11 +38,10 @@ app.post('/login', async (req, res) => {
   res.send({ token });
 });
 
-app.get('/protected', authMiddleware, (req, res) => {
+app.get(`${baseUrl}/protected`, authMiddleware, (req, res) => {
   res.send('This is a protected route');
 });
 
 app.listen(port, () => {
   console.log(`Auth service listening on port ${port}`);
 });
-  

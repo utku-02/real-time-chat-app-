@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const baseUrl = process.env.BASE_URL || '';
 
 app.use(express.json());
 
@@ -26,7 +27,7 @@ const chatSchema = new mongoose.Schema({
 
 const Chat = mongoose.model('Chat', chatSchema);
 
-app.post('/chats', authMiddleware, async (req, res) => {
+app.post(`${baseUrl}/chats`, authMiddleware, async (req, res) => {
   const chat = new Chat({
     users: [req.user.userId, req.body.otherUserId],
   });
@@ -34,7 +35,7 @@ app.post('/chats', authMiddleware, async (req, res) => {
   res.status(201).send(chat);
 });
 
-app.post('/chats/:id/messages', authMiddleware, async (req, res) => {
+app.post(`${baseUrl}/chats/:id/messages`, authMiddleware, async (req, res) => {
   const chat = await Chat.findById(req.params.id);
   if (!chat) return res.status(404).send('Chat not found');
 
@@ -48,7 +49,7 @@ app.post('/chats/:id/messages', authMiddleware, async (req, res) => {
   res.status(201).send(message);
 });
 
-app.get('/chats', authMiddleware, async (req, res) => {
+app.get(`${baseUrl}/chats`, authMiddleware, async (req, res) => {
   const chats = await Chat.find({ users: req.user.userId });
   res.send(chats);
 });

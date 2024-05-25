@@ -18,6 +18,8 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: BASE_URL
+              value: "/swwao.courses.orbit.au.dk/grp-6/auth"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

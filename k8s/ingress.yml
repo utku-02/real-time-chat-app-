@@ -7,37 +7,38 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - http:
+  - host: swwao.courses.orbit.au.dk
+    http:
       paths:
-      - path: /swwao.courses.orbit.au.dk/grp-6/auth
+      - path: /grp-6/auth(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: auth-service
             port:
               number: 3000
-      - path: /swwao.courses.orbit.au.dk/grp-6/user
+      - path: /grp-6/user(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: user-service
             port:
               number: 3000
-      - path: /swwao.courses.orbit.au.dk/grp-6/chat
+      - path: /grp-6/chat(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: chat-service
             port:
               number: 3001
-      - path: /swwao.courses.orbit.au.dk/grp-6/message
+      - path: /grp-6/message(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: message-service
             port:
               number: 3002
-      - path: /swwao.courses.orbit.au.dk/grp-6/frontend
+      - path: /grp-6/frontend(/|$)(.*)
         pathType: Prefix
         backend:
           service:
