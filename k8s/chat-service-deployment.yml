@@ -25,6 +25,8 @@ spec:
                   key: JWT_SECRET
             - name: MONGODB_URI
               value: mongodb://mongo:27017/chatdb
+            - name: BASE_URL
+              value: "/swwao.courses.orbit.au.dk/grp-6/chat"
           resources:
             requests:
               memory: "64Mi"
