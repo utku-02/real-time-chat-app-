@@ -13,6 +13,7 @@ variables:
   CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
   CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
   CI_REGISTRY_IMAGE_API_GATEWAY: docker.io/grejs420/api-gateway
+  CI_REGISTRY_IMAGE_FRONTEND: docker.io/grejs420/frontend
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
@@ -77,6 +78,18 @@ build_api_gateway:
   only:
     - main
 
+build_frontend:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_FRONTEND:latest ./frontend
+    - docker push $CI_REGISTRY_IMAGE_FRONTEND:latest
+  only:
+    - main
+
 test_user_service:
   stage: test
   image: docker:latest
@@ -129,6 +142,19 @@ test_auth_service:
   only:
     - main
 
+test_frontend:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker rm -f frontend || true
+    - docker run -d --name frontend -p 80:80 grejs420/frontend:latest
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep frontend || docker logs frontend
+  only:
+    - main
+
 deploy:
   stage: deploy
   image:
@@ -144,5 +170,6 @@ deploy:
     - kubectl apply -f k8s/message-service-deployment.yml
     - kubectl apply -f k8s/auth-service-deployment.yml
     - kubectl apply -f k8s/api-gateway-deployment.yml
+    - kubectl apply -f k8s/frontend-deployment.yml
   only:
     - main
