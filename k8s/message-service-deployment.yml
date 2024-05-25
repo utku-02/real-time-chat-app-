@@ -25,6 +25,8 @@ spec:
             secretKeyRef:
               name: auth-service-secrets
               key: JWT_SECRET
+        - name: BASE_URL
+          value: "/swwao.courses.orbit.au.dk/grp-6/message"
         resources:
           requests:
             memory: "64Mi"
