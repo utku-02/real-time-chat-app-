@@ -12,7 +12,6 @@ variables:
   CI_REGISTRY_IMAGE_CHAT_SERVICE: docker.io/grejs420/chat-service
   CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
   CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
-  CI_REGISTRY_IMAGE_API_GATEWAY: docker.io/grejs420/api-gateway
   CI_REGISTRY_IMAGE_FRONTEND: docker.io/grejs420/frontend
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
@@ -63,18 +62,6 @@ build_auth_service:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:latest ./backend/auth-service
     - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:latest
-  only:
-    - main
-
-build_api_gateway:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE_API_GATEWAY:latest ./backend/api-gateway
-    - docker push $CI_REGISTRY_IMAGE_API_GATEWAY:latest
   only:
     - main
 
@@ -170,7 +157,6 @@ deploy:
     - kubectl apply -f k8s/chat-service-deployment.yml
     - kubectl apply -f k8s/message-service-deployment.yml
     - kubectl apply -f k8s/auth-service-deployment.yml
-    - kubectl apply -f k8s/api-gateway-deployment.yml
     - kubectl apply -f k8s/frontend-deployment.yml
     - kubectl apply -f k8s/frontend-service.yaml
     - kubectl apply -f k8s/my-ingress.yml

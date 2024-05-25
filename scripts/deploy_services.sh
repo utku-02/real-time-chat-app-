@@ -2,7 +2,6 @@
 
 # Deploy all services
 echo "Deploying all services:"
-kubectl apply -f k8s/api-gateway-deployment.yml
 kubectl apply -f k8s/auth-service-deployment.yml
 kubectl apply -f k8s/auth-service-secret.yml
 kubectl apply -f k8s/chat-service-deployment.yml
