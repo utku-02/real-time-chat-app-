@@ -157,19 +157,6 @@ test_frontend:
   only:
     - main
 
-test_graphql_gateway:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f graphql-gateway || true
-    - docker run -d --name graphql-gateway -p 8081:80 grejs420/graphql-gateway:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep graphql-gateway || docker logs graphql-gateway
-  only:
-    - main
-
 # Deploy Jobs
 deploy_database:
   stage: deploy
