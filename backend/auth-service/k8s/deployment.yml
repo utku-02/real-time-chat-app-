@@ -25,8 +25,8 @@ spec:
                 secretKeyRef:
                   name: auth-service-secrets
                   key: JWT_SECRET
-            - name: MONGODB_URI
-              value: mongodb://mongo:27017/authdb
+            - name: GRAPHQL_URI
+              value: "http://graphql-gateway:4000/graphql"
           resources:
             requests:
               memory: "64Mi"
@@ -34,16 +34,3 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-service
-spec:
-  selector:
-    app: auth-service
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-  type: ClusterIP

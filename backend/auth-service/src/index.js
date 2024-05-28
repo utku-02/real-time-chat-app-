@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const { ApolloClient, InMemoryCache, gql } = require('@apollo/client');
+const fetch = require('cross-fetch');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('./models/User');
 const authMiddleware = require('./utils/authMiddleware');
 require('dotenv').config();
 
@@ -11,31 +11,55 @@ const port = process.env.PORT || 3000;
 const baseUrl = process.env.BASE_URL || '';
 const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
-app.use(express.json());
-
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongo:27017/authdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const client = new ApolloClient({
+  uri: process.env.GRAPHQL_URI || 'http://graphql-gateway:4000/graphql',
+  cache: new InMemoryCache(),
+  fetch
 });
+
+app.use(express.json());
 
 app.post(`${baseUrl}/register`, async (req, res) => {
   const { email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ email, password: hashedPassword });
-  await user.save();
-  res.status(201).send('User registered');
+
+  const REGISTER_USER = gql`
+    mutation Register($email: String!, $password: String!) {
+      register(email: $email, password: $password) {
+        id
+        email
+      }
+    }
+  `;
+
+  try {
+    const result = await client.mutate({
+      mutation: REGISTER_USER,
+      variables: { email, password }
+    });
+    res.status(201).send(result.data.register);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 app.post(`${baseUrl}/login`, async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).send('Invalid email or password');
 
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return res.status(400).send('Invalid email or password');
+  const LOGIN_USER = gql`
+    mutation Login($email: String!, $password: String!) {
+      login(email: $email, password: $password)
+    }
+  `;
 
-  const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
-  res.send({ token });
+  try {
+    const result = await client.mutate({
+      mutation: LOGIN_USER,
+      variables: { email, password }
+    });
+    res.send({ token: result.data.login });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 
 app.get(`${baseUrl}/protected`, authMiddleware, (req, res) => {

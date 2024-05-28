@@ -1,5 +1,6 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const { ApolloClient, InMemoryCache, gql } = require('@apollo/client');
+const fetch = require('cross-fetch');
 const authMiddleware = require('./utils/authMiddleware');
 require('dotenv').config();
 
@@ -7,51 +8,87 @@ const app = express();
 const port = process.env.PORT || 3001;
 const baseUrl = process.env.BASE_URL || '';
 
+const client = new ApolloClient({
+  uri: process.env.GRAPHQL_URI || 'http://graphql-gateway:4000/graphql',
+  cache: new InMemoryCache(),
+  fetch
+});
+
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://mongo:27017/chatdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const chatSchema = new mongoose.Schema({
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  messages: [
-    {
-      sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      content: { type: String, required: true },
-      timestamp: { type: Date, default: Date.now },
-    },
-  ],
-});
-
-const Chat = mongoose.model('Chat', chatSchema);
-
 app.post(`${baseUrl}/chats`, authMiddleware, async (req, res) => {
-  const chat = new Chat({
-    users: [req.user.userId, req.body.otherUserId],
-  });
-  await chat.save();
-  res.status(201).send(chat);
+  const { otherUserId } = req.body;
+
+  const CREATE_CHAT = gql`
+    mutation CreateChat($userIds: [ID!]!) {
+      createChat(userIds: $userIds) {
+        id
+        users
+      }
+    }
+  `;
+
+  try {
+    const result = await client.mutate({
+      mutation: CREATE_CHAT,
+      variables: { userIds: [req.user.userId, otherUserId] }
+    });
+    res.status(201).send(result.data.createChat);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 app.post(`${baseUrl}/chats/:id/messages`, authMiddleware, async (req, res) => {
-  const chat = await Chat.findById(req.params.id);
-  if (!chat) return res.status(404).send('Chat not found');
+  const { content } = req.body;
 
-  const message = {
-    sender: req.user.userId,
-    content: req.body.content,
-  };
+  const ADD_MESSAGE = gql`
+    mutation AddMessage($chatId: ID!, $senderId: ID!, $content: String!) {
+      addMessage(chatId: $chatId, senderId: $senderId, content: $content) {
+        id
+        senderId
+        content
+        timestamp
+      }
+    }
+  `;
 
-  chat.messages.push(message);
-  await chat.save();
-  res.status(201).send(message);
+  try {
+    const result = await client.mutate({
+      mutation: ADD_MESSAGE,
+      variables: { chatId: req.params.id, senderId: req.user.userId, content }
+    });
+    res.status(201).send(result.data.addMessage);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 app.get(`${baseUrl}/chats`, authMiddleware, async (req, res) => {
-  const chats = await Chat.find({ users: req.user.userId });
-  res.send(chats);
+  const GET_CHATS = gql`
+    query GetChats($userId: ID!) {
+      chats(userId: $userId) {
+        id
+        users
+        messages {
+          id
+          senderId
+          content
+          timestamp
+        }
+      }
+    }
+  `;
+
+  try {
+    const result = await client.query({
+      query: GET_CHATS,
+      variables: { userId: req.user.userId }
+    });
+    res.send(result.data.chats);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 app.get('/health', (req, res) => {

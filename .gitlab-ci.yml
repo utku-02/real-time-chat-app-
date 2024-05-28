@@ -13,6 +13,7 @@ variables:
   CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
   CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
   CI_REGISTRY_IMAGE_FRONTEND: docker.io/grejs420/frontend
+  CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY: docker.io/grejs420/graphql-gateway
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
@@ -74,6 +75,18 @@ build_frontend:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE_FRONTEND:latest ./frontend
     - docker push $CI_REGISTRY_IMAGE_FRONTEND:latest
+  only:
+    - main
+
+build_graphql_gateway:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY:latest ./backend/graphql-gateway
+    - docker push $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY:latest
   only:
     - main
 
@@ -154,11 +167,17 @@ deploy:
     - kubectl config use-context default-context
     - kubectl apply -f database/k8s/deployment.yml
     - kubectl apply -f backend/user-service/k8s/deployment.yml
+    - kubectl apply -f backend/user-service/k8s/service.yml
     - kubectl apply -f backend/chat-service/k8s/deployment.yml
+    - kubectl apply -f backend/chat-service/k8s/service.yml
     - kubectl apply -f backend/message-service/k8s/deployment.yml
+    - kubectl apply -f backend/message-service/k8s/service.yml
     - kubectl apply -f backend/auth-service/k8s/deployment.yml
+    - kubectl apply -f backend/auth-service/k8s/service.yml
+    - kubectl apply -f backend/graphql-gateway/k8s/deployment.yml
+    - kubectl apply -f backend/graphql-gateway/k8s/service.yml
     - kubectl apply -f frontend/k8s/deployment.yml
     - kubectl apply -f frontend/k8s/service.yaml
-    - kubectl apply -f ingress/k8s/my-ingress.yml
+    - kubectl apply -f ingress/k8s/ingress.yml
   only:
     - main

@@ -13,36 +13,24 @@ spec:
         app: user-service
     spec:
       containers:
-      - name: user-service
-        image: grejs420/user-service:latest
-        ports:
-        - containerPort: 3000
-        resources:
+        - name: user-service
+          image: grejs420/user-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: BASE_URL
+              value: "/swwao.courses.orbit.au.dk/grp-6/user"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-secrets
+                  key: JWT_SECRET
+            - name: GRAPHQL_URI
+              value: "http://graphql-gateway:4000/graphql"
+          resources:
             requests:
               memory: "64Mi"
               cpu: "250m"
             limits:
               memory: "128Mi"
               cpu: "500m"
-        env:
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: auth-service-secrets
-              key: JWT_SECRET
-        - name: MONGODB_URI
-          value: mongodb://mongo:27017/userdb
-        - name: BASE_URL
-          value: "/swwao.courses.orbit.au.dk/grp-6/user"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: user-service
-spec:
-  selector:
-    app: user-service
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
