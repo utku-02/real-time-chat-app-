@@ -171,6 +171,22 @@ test_graphql_gateway:
     - main
 
 # Deploy Jobs
+deploy_database:
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
+    - kubectl apply -f database/k8s/deployment.yml
+    - kubectl apply -f database/k8s/service.yml
+  only:
+    - main
+
+
 deploy_user_service:
   stage: deploy
   image:
