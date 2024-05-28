@@ -106,7 +106,7 @@ test_user_service:
     - docker ps -a
     - echo "Starting user-service on port $PORT"
     - docker run -d --name user-service -p $PORT:$PORT grejs420/user-service:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting user-service"
     - docker ps
     - docker ps | grep user-service || docker logs user-service
@@ -127,7 +127,7 @@ test_chat_service:
     - docker ps -a
     - echo "Starting chat-service on port $PORT"
     - docker run -d --name chat-service -p $PORT:$PORT grejs420/chat-service:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting chat-service"
     - docker ps
     - docker ps | grep chat-service || docker logs chat-service
@@ -148,7 +148,7 @@ test_message_service:
     - docker ps -a
     - echo "Starting message-service on port $PORT"
     - docker run -d --name message-service -p $PORT:$PORT grejs420/message-service:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting message-service"
     - docker ps
     - docker ps | grep message-service || docker logs message-service
@@ -169,7 +169,7 @@ test_auth_service:
     - docker ps -a
     - echo "Starting auth-service on port $PORT"
     - docker run -d --name auth-service -p $PORT:$PORT grejs420/auth-service:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting auth-service"
     - docker ps
     - docker ps | grep auth-service || docker logs auth-service
@@ -190,7 +190,7 @@ test_frontend:
     - docker ps -a
     - echo "Starting frontend on port $PORT"
     - docker run -d --name frontend -p $PORT:80 grejs420/frontend:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting frontend"
     - docker ps
     - docker ps | grep frontend || docker logs frontend
@@ -211,7 +211,7 @@ test_graphql_gateway:
     - docker ps -a
     - echo "Starting graphql-gateway on port $PORT"
     - docker run -d --name graphql-gateway -p $PORT:80 grejs420/graphql-gateway:latest
-    - sleep 20 # Increased wait time
+    - sleep 20
     - echo "Checking for running containers after starting graphql-gateway"
     - docker ps
     - docker ps | grep graphql-gateway || docker logs graphql-gateway
