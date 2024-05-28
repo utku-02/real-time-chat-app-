@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mongo-pv
+  name: mongo-volume-pv
 spec:
+  storageClassName: "local-path"
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
   hostPath:
-    path: "/nfs/data"
+    path: "/data/dbmongo"
