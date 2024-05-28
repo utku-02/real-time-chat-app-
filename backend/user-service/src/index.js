@@ -1,6 +1,6 @@
 const express = require('express');
-const { ApolloClient, InMemoryCache, gql } = require('apollo-client');
-const { HttpLink } = require('apollo-link-http');
+const ApolloClient = require('apollo-boost').default;
+const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
 require('dotenv').config();
 
@@ -9,8 +9,8 @@ const port = process.env.PORT || 3000;
 const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: 'http://localhost:4000/graphql', fetch }),
-  cache: new InMemoryCache()
+  uri: 'http://localhost:4000/graphql',  // URI til GraphQL gateway
+  fetch
 });
 
 app.use(express.json());
