@@ -151,7 +151,7 @@ test_frontend:
     - docker:dind
   script:
     - docker rm -f frontend || true
-    - docker run -d --name frontend -p 80:80 grejs420/frontend:latest
+    - docker run -d --name frontend -p 8080:80 grejs420/frontend:latest
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep frontend || docker logs frontend
   only:
@@ -164,7 +164,7 @@ test_graphql_gateway:
     - docker:dind
   script:
     - docker rm -f graphql-gateway || true
-    - docker run -d --name graphql-gateway -p 80:80 grejs420/graphql-gateway:latest
+    - docker run -d --name graphql-gateway -p 8081:80 grejs420/graphql-gateway:latest
     - sleep 10 # Wait for the container to be fully up and running
     - docker ps | grep graphql-gateway || docker logs graphql-gateway
   only:
