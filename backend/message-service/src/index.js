@@ -1,5 +1,6 @@
 const express = require('express');
-const { ApolloClient, InMemoryCache, gql } = require('@apollo/client');
+const { ApolloClient, InMemoryCache, gql } = require('apollo-client');
+const { HttpLink } = require('apollo-link-http');
 const fetch = require('cross-fetch');
 const authMiddleware = require('./utils/authMiddleware');
 require('dotenv').config();
@@ -9,9 +10,8 @@ const port = process.env.PORT || 3002;
 const baseUrl = process.env.BASE_URL || '';
 
 const client = new ApolloClient({
-  uri: process.env.GRAPHQL_URI || 'http://graphql-gateway:4000/graphql',
-  cache: new InMemoryCache(),
-  fetch
+  link: new HttpLink({ uri: process.env.GRAPHQL_URI || 'http://graphql-gateway:4000/graphql', fetch }),
+  cache: new InMemoryCache()
 });
 
 app.use(express.json());

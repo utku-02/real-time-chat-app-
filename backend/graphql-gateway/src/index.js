@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI || 'mongodb://mongo:27017/userdb';
 const dbName = 'userdb';
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
 let db;
 
