@@ -155,6 +155,19 @@ test_frontend:
   only:
     - main
 
+test_graphql_gateway:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker rm -f graphql_gateway || true
+    - docker run -d --name graphql_gateway -p 80:80 grejs420/graphql_gateway:latest
+    - sleep 10 # Wait for the container to be fully up and running
+    - docker ps | grep graphql_gateway || docker logs graphql_gateway
+  only:
+    - main
+
 deploy:
   stage: deploy
   image:
@@ -166,6 +179,7 @@ deploy:
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
     - kubectl apply -f database/k8s/deployment.yml
+    - kubectl apply -f database/k8s/service.yml
     - kubectl apply -f backend/user-service/k8s/deployment.yml
     - kubectl apply -f backend/user-service/k8s/service.yml
     - kubectl apply -f backend/chat-service/k8s/deployment.yml

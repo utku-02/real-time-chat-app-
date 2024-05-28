@@ -30,13 +30,3 @@ spec:
       volumes:
       - name: mongo-storage
         emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongo
-spec:
-  ports:
-  - port: 27017
-  selector:
-    app: mongo
