@@ -98,9 +98,17 @@ test_user_service:
   services:
     - docker:dind
   script:
+    - PORT=3000
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f user-service || true
-    - docker run -d --name user-service -p 3000:3000 grejs420/user-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting user-service on port $PORT"
+    - docker run -d --name user-service -p $PORT:$PORT grejs420/user-service:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting user-service"
+    - docker ps
     - docker ps | grep user-service || docker logs user-service
   only:
     - main
@@ -111,9 +119,17 @@ test_chat_service:
   services:
     - docker:dind
   script:
+    - PORT=3001
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f chat-service || true
-    - docker run -d --name chat-service -p 3001:3001 grejs420/chat-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting chat-service on port $PORT"
+    - docker run -d --name chat-service -p $PORT:$PORT grejs420/chat-service:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting chat-service"
+    - docker ps
     - docker ps | grep chat-service || docker logs chat-service
   only:
     - main
@@ -124,9 +140,17 @@ test_message_service:
   services:
     - docker:dind
   script:
+    - PORT=3002
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f message-service || true
-    - docker run -d --name message-service -p 3002:3002 grejs420/message-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting message-service on port $PORT"
+    - docker run -d --name message-service -p $PORT:$PORT grejs420/message-service:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting message-service"
+    - docker ps
     - docker ps | grep message-service || docker logs message-service
   only:
     - main
@@ -137,9 +161,17 @@ test_auth_service:
   services:
     - docker:dind
   script:
+    - PORT=3003
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f auth-service || true
-    - docker run -d --name auth-service -p 3003:3003 grejs420/auth-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting auth-service on port $PORT"
+    - docker run -d --name auth-service -p $PORT:$PORT grejs420/auth-service:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting auth-service"
+    - docker ps
     - docker ps | grep auth-service || docker logs auth-service
   only:
     - main
@@ -150,9 +182,17 @@ test_frontend:
   services:
     - docker:dind
   script:
+    - PORT=8080
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f frontend || true
-    - docker run -d --name frontend -p 8080:80 grejs420/frontend:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting frontend on port $PORT"
+    - docker run -d --name frontend -p $PORT:80 grejs420/frontend:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting frontend"
+    - docker ps
     - docker ps | grep frontend || docker logs frontend
   only:
     - main
@@ -163,9 +203,17 @@ test_graphql_gateway:
   services:
     - docker:dind
   script:
+    - PORT=8081
+    - echo "Checking for running containers before cleanup"
+    - docker ps -a
     - docker rm -f graphql-gateway || true
-    - docker run -d --name graphql-gateway -p 8081:80 grejs420/graphql-gateway:latest
-    - sleep 10 # Wait for the container to be fully up and running
+    - echo "Checking for running containers after cleanup"
+    - docker ps -a
+    - echo "Starting graphql-gateway on port $PORT"
+    - docker run -d --name graphql-gateway -p $PORT:80 grejs420/graphql-gateway:latest
+    - sleep 20 # Increased wait time
+    - echo "Checking for running containers after starting graphql-gateway"
+    - docker ps
     - docker ps | grep graphql-gateway || docker logs graphql-gateway
   only:
     - main
@@ -185,7 +233,6 @@ deploy_database:
     - kubectl apply -f database/k8s/service.yml
   only:
     - main
-
 
 deploy_user_service:
   stage: deploy
