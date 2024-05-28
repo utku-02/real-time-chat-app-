@@ -197,7 +197,8 @@ deploy_frontend:
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
     - kubectl apply -f frontend/k8s/deployment.yml
-    - kubectl apply -f frontend/k8s/service.yaml
+    - kubectl apply -f frontend/k8s/service.yml
+    
   only:
     - main
 
