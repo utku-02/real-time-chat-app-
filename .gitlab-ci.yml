@@ -1,4 +1,5 @@
 stages:
+  - cleanup
   - build
   - test
   - deploy
@@ -17,6 +18,25 @@ variables:
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
+
+# Cleanup Jobs
+cleanup:
+  stage: cleanup
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "Stopping and removing all containers..."
+    - docker stop $(docker ps -aq) || true
+    - docker rm $(docker ps -aq) || true
+    - echo "Removing unused images and volumes..."
+    - docker system prune -af
+    - docker volume prune -f
+    - echo "Restarting Docker service..."
+    - service docker restart || true
+  only:
+    - main
+
 
 # Build Jobs
 build_user_service:
