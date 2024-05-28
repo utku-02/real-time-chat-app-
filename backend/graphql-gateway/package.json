@@ -2,13 +2,15 @@
     "name": "graphql-gateway",
     "version": "1.0.0",
     "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js"
+    },
     "dependencies": {
-      "apollo-server": "^3.13.0",
-      "graphql": "^16.8.1",
-      "mongodb": "^6.6.2",
-      "dotenv": "^16.4.5",
-      "bcryptjs": "^2.4.3",
-      "jsonwebtoken": "^9.0.2"
+        "apollo-server": "^3.13.0",
+        "graphql": "^16.8.1",
+        "mongodb": "^6.6.2",
+        "dotenv": "^16.4.5",
+        "bcryptjs": "^2.4.3",
+        "jsonwebtoken": "^9.0.2"
     }
-  }
-  
+}
