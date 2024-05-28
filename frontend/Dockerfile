@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY package.json ./
 COPY package-lock.json ./
+RUN npm install react-dom/client
 RUN npm install
+
 
 COPY . ./
 RUN npm run build
