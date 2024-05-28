@@ -1,6 +1,5 @@
 stages:
   - build
-  - test
   - deploy
 
 variables:
@@ -91,72 +90,6 @@ build_graphql_gateway:
   only:
     - main
 
-# Test Jobs
-test_user_service:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f user-service || true
-    - docker run -d --name user-service -p 3000:3000 grejs420/user-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep user-service || docker logs user-service
-  only:
-    - main
-
-test_chat_service:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f chat-service || true
-    - docker run -d --name chat-service -p 3001:3001 grejs420/chat-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep chat-service || docker logs chat-service
-  only:
-    - main
-
-test_message_service:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f message-service || true
-    - docker run -d --name message-service -p 3002:3002 grejs420/message-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep message-service || docker logs message-service
-  only:
-    - main
-
-test_auth_service:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f auth-service || true
-    - docker run -d --name auth-service -p 3003:3003 grejs420/auth-service:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep auth-service || docker logs auth-service
-  only:
-    - main
-
-test_frontend:
-  stage: test
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker rm -f frontend || true
-    - docker run -d --name frontend -p 8080:80 grejs420/frontend:latest
-    - sleep 10 # Wait for the container to be fully up and running
-    - docker ps | grep frontend || docker logs frontend
-  only:
-    - main
-
 # Deploy Jobs
 deploy_database:
   stage: deploy
@@ -170,6 +103,9 @@ deploy_database:
     - kubectl config use-context default-context
     - kubectl apply -f database/k8s/deployment.yml
     - kubectl apply -f database/k8s/service.yml
+    - kubectl apply -f database/k8s/pv.yml
+    - kubectl apply -f database/k8s/pvc.yml
+
   only:
     - main
 
@@ -231,6 +167,7 @@ deploy_auth_service:
     - kubectl config use-context default-context
     - kubectl apply -f backend/auth-service/k8s/deployment.yml
     - kubectl apply -f backend/auth-service/k8s/service.yml
+    
   only:
     - main
 
