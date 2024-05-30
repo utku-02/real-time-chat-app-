@@ -48,21 +48,6 @@ variables:
   only:
     - main
 
-# Shared deploy job template
-.deploy_template: &deploy_template
-  stage: deploy
-  image:
-    name: lachlanevenson/k8s-kubectl:latest
-    entrypoint: ["/bin/sh", "-c"]
-  script:
-    - kubectl config set-cluster default-cluster --server=$KUBE_URL
-    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
-    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
-    - kubectl config use-context default-context
-    - kubectl get nodes  # Added to verify kubectl connection
-  only:
-    - main
-
 # Build Jobs
 build_user_service:
   stage: build
@@ -157,50 +142,126 @@ test_graphql_gateway:
 
 # Deploy Jobs
 deploy_database:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f database/k8s/deployment.yml
     - kubectl apply -f database/k8s/service.yml
     - kubectl apply -f database/k8s/pv.yml
     - kubectl apply -f database/k8s/pvc.yml
 
+  only:
+    - main
+
+
 deploy_user_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/user-service/k8s/deployment.yml
     - kubectl apply -f backend/user-service/k8s/service.yml
+  only:
+    - main
 
 deploy_chat_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/chat-service/k8s/deployment.yml
     - kubectl apply -f backend/chat-service/k8s/service.yml
+  only:
+    - main
 
 deploy_message_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/message-service/k8s/deployment.yml
     - kubectl apply -f backend/message-service/k8s/service.yml
+  only:
+    - main
 
 deploy_auth_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/auth-service/k8s/deployment.yml
     - kubectl apply -f backend/auth-service/k8s/service.yml
+    
+  only:
+    - main
 
 deploy_graphql_gateway:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/graphql-gateway/k8s/deployment.yml
     - kubectl apply -f backend/graphql-gateway/k8s/service.yml
+  only:
+    - main
 
 deploy_frontend:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f frontend/k8s/deployment.yml
     - kubectl apply -f frontend/k8s/service.yml
+    
+  only:
+    - main
 
 deploy_ingress:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f ingress/k8s/ingress.yml
+  only:
+    - main
