@@ -8,18 +8,15 @@ import Messages from './components/Messages';
 
 function App() {
   return (
-    <Router basename="/grp-6/frontend">
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/chats" element={<Chats />} />
-          <Route path="/chats/:id/messages" element={<Messages />} />
-          {/* Catch-all route to handle undefined paths */}
-          <Route path="*" element={<Login />} />
-        </Routes>
-      </div>
+    <Router>
+      <Routes>
+        <Route path="/grp-6/frontend/" element={<Login />} />
+        <Route path="/grp-6/frontend/register" element={<Register />} />
+        <Route path="/grp-6/frontend/users" element={<Users />} />
+        <Route path="/grp-6/frontend/chats" element={<Chats />} />
+        <Route path="/grp-6/frontend/chats/:id/messages" element={<Messages />} />
+        <Route path="/grp-6/frontend/*" element={<Login />} />
+      </Routes>
     </Router>
   );
 }
