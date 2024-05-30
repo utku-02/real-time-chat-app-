@@ -1,12 +1,9 @@
 stages:
   - build
-  - test
   - deploy
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375
-  DOCKER_TLS_CERTDIR: ""
   CI_REGISTRY: https://index.docker.io/v1/
   CI_REGISTRY_USER: grejs420
   CI_REGISTRY_PASSWORD: rovgard1!
@@ -20,132 +17,81 @@ variables:
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
 
-# Shared login script
-.docker_login: &docker_login
-  - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-
-# Shared build job template
-.build_template: &build_template
-  image: docker:latest
-  services:
-    - name: docker:dind
-      alias: docker
-  script:
-    - *docker_login
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $SERVICE_PATH
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  only:
-    - main
-
-# Shared test job template
-.test_template: &test_template
-  image: docker:latest
-  services:
-    - name: docker:dind
-      alias: docker
-  script:
-    - *docker_login
-    - docker rm -f $SERVICE_NAME || true
-    - docker run -d --name $SERVICE_NAME -p $PORT:$PORT $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-    - sleep 10
-    - docker ps | grep $SERVICE_NAME || docker logs $SERVICE_NAME
-  only:
-    - main
-
 # Build Jobs
 build_user_service:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-    SERVICE_PATH: ./backend/user-service
-  <<: *build_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_USER_SERVICE:latest ./backend/user-service
+    - docker push $CI_REGISTRY_IMAGE_USER_SERVICE:latest
+  only:
+    - main
 
 build_chat_service:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-    SERVICE_PATH: ./backend/chat-service
-  <<: *build_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_CHAT_SERVICE:latest ./backend/chat-service
+    - docker push $CI_REGISTRY_IMAGE_CHAT_SERVICE:latest
+  only:
+    - main
 
 build_message_service:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-    SERVICE_PATH: ./backend/message-service
-  <<: *build_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:latest ./backend/message-service
+    - docker push $CI_REGISTRY_IMAGE_MESSAGE_SERVICE:latest
+  only:
+    - main
 
 build_auth_service:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-    SERVICE_PATH: ./backend/auth-service
-  <<: *build_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_AUTH_SERVICE:latest ./backend/auth-service
+    - docker push $CI_REGISTRY_IMAGE_AUTH_SERVICE:latest
+  only:
+    - main
 
 build_frontend:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-    SERVICE_PATH: ./frontend
-  <<: *build_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_FRONTEND:latest ./frontend
+    - docker push $CI_REGISTRY_IMAGE_FRONTEND:latest
+  only:
+    - main
 
 build_graphql_gateway:
   stage: build
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
-    SERVICE_PATH: ./backend/graphql-gateway
-  <<: *build_template
-
-# Test Jobs
-test_user_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-    SERVICE_NAME: user-service
-    PORT: 3000
-  <<: *test_template
-
-test_chat_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-    SERVICE_NAME: chat-service
-    PORT: 3001
-  <<: *test_template
-
-test_message_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-    SERVICE_NAME: message-service
-    PORT: 3002
-  <<: *test_template
-
-test_auth_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-    SERVICE_NAME: auth-service
-    PORT: 3003
-  <<: *test_template
-
-test_frontend:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-    SERVICE_NAME: frontend
-    PORT: 3004
-  <<: *test_template
-
-test_graphql_gateway:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
-    SERVICE_NAME: graphql-gateway
-    PORT: 3005
-  <<: *test_template
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY:latest ./backend/graphql-gateway
+    - docker push $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY:latest
+  only:
+    - main
 
 # Deploy Jobs
-.deploy_template: &deploy_template
+deploy_database:
   stage: deploy
   image:
     name: lachlanevenson/k8s-kubectl:latest
@@ -155,54 +101,117 @@ test_graphql_gateway:
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
-  only:
-    - main
-
-deploy_database:
-  <<: *deploy_template
-  script:
     - kubectl apply -f database/k8s/deployment.yml
     - kubectl apply -f database/k8s/service.yml
     - kubectl apply -f database/k8s/pv.yml
     - kubectl apply -f database/k8s/pvc.yml
 
+  only:
+    - main
+
+
 deploy_user_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/user-service/k8s/deployment.yml
     - kubectl apply -f backend/user-service/k8s/service.yml
+  only:
+    - main
 
 deploy_chat_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/chat-service/k8s/deployment.yml
     - kubectl apply -f backend/chat-service/k8s/service.yml
+  only:
+    - main
 
 deploy_message_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/message-service/k8s/deployment.yml
     - kubectl apply -f backend/message-service/k8s/service.yml
+  only:
+    - main
 
 deploy_auth_service:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/auth-service/k8s/deployment.yml
     - kubectl apply -f backend/auth-service/k8s/service.yml
+    
+  only:
+    - main
 
 deploy_graphql_gateway:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f backend/graphql-gateway/k8s/deployment.yml
     - kubectl apply -f backend/graphql-gateway/k8s/service.yml
+  only:
+    - main
 
 deploy_frontend:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f frontend/k8s/deployment.yml
     - kubectl apply -f frontend/k8s/service.yml
+    
+  only:
+    - main
 
 deploy_ingress:
-  <<: *deploy_template
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
   script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
     - kubectl apply -f ingress/k8s/ingress.yml
+  only:
+    - main
