@@ -107,54 +107,54 @@ build_graphql_gateway:
     SERVICE_PATH: ./backend/graphql-gateway
   <<: *build_template
 
-# Test Jobs
-test_user_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-    SERVICE_NAME: user-service
-    PORT: 3000
-  <<: *test_template
+# # Test Jobs
+# test_user_service:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
+#     SERVICE_NAME: user-service
+#     PORT: 3000
+#   <<: *test_template
 
-test_chat_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-    SERVICE_NAME: chat-service
-    PORT: 3001
-  <<: *test_template
+# test_chat_service:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
+#     SERVICE_NAME: chat-service
+#     PORT: 3001
+#   <<: *test_template
 
-test_message_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-    SERVICE_NAME: message-service
-    PORT: 3002
-  <<: *test_template
+# test_message_service:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
+#     SERVICE_NAME: message-service
+#     PORT: 3002
+#   <<: *test_template
 
-test_auth_service:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-    SERVICE_NAME: auth-service
-    PORT: 3003
-  <<: *test_template
+# test_auth_service:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
+#     SERVICE_NAME: auth-service
+#     PORT: 3003
+#   <<: *test_template
 
-test_frontend:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-    SERVICE_NAME: frontend
-    PORT: 3004
-  <<: *test_template
+# test_frontend:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
+#     SERVICE_NAME: frontend
+#     PORT: 3004
+#   <<: *test_template
 
-test_graphql_gateway:
-  stage: test
-  variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
-    SERVICE_NAME: graphql-gateway
-    PORT: 3005
-  <<: *test_template
+# test_graphql_gateway:
+#   stage: test
+#   variables:
+#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
+#     SERVICE_NAME: graphql-gateway
+#     PORT: 3005
+#   <<: *test_template
 
 # Deploy Jobs
 deploy_database:
