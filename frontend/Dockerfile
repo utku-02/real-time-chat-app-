@@ -4,8 +4,9 @@ WORKDIR /app
 COPY . .
 RUN npm install
 RUN npm run build
+# Set environment variable
+ENV PUBLIC_URL=/grp-6/frontend
 
-# Stage 2: Serve the React app with nginx
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
