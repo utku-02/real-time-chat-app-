@@ -7,9 +7,8 @@ import Chats from './components/Chats';
 import Messages from './components/Messages';
 
 function App() {
-  console.log("App component rendered");
   return (
-    <Router>
+    <Router basename="/grp-6/frontend">
       <div className="App">
         <Routes>
           <Route path="/" element={<Login />} />
@@ -17,6 +16,8 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/chats" element={<Chats />} />
           <Route path="/chats/:id/messages" element={<Messages />} />
+          {/* Catch-all route to handle undefined paths */}
+          <Route path="*" element={<Login />} />
         </Routes>
       </div>
     </Router>
