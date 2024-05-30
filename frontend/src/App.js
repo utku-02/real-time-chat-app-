@@ -7,6 +7,7 @@ import Chats from './components/Chats';
 import Messages from './components/Messages';
 
 function App() {
+  console.log("App component rendered");
   return (
     <Router>
       <div className="App">
