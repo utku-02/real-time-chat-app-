@@ -5,6 +5,8 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_TLS_CERTDIR: ""
   CI_REGISTRY: https://index.docker.io/v1/
   CI_REGISTRY_USER: grejs420
   CI_REGISTRY_PASSWORD: rovgard1!
@@ -26,10 +28,11 @@ variables:
 .build_template: &build_template
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: docker
   script:
     - *docker_login
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG ./path/to/service
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $SERVICE_PATH
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   only:
     - main
@@ -38,8 +41,10 @@ variables:
 .test_template: &test_template
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: docker
   script:
+    - *docker_login
     - docker rm -f $SERVICE_NAME || true
     - docker run -d --name $SERVICE_NAME -p $PORT:$PORT $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
     - sleep 10
@@ -52,36 +57,42 @@ build_user_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
+    SERVICE_PATH: ./backend/user-service
   <<: *build_template
 
 build_chat_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
+    SERVICE_PATH: ./backend/chat-service
   <<: *build_template
 
 build_message_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
+    SERVICE_PATH: ./backend/message-service
   <<: *build_template
 
 build_auth_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
+    SERVICE_PATH: ./backend/auth-service
   <<: *build_template
 
 build_frontend:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
+    SERVICE_PATH: ./frontend
   <<: *build_template
 
 build_graphql_gateway:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
+    SERVICE_PATH: ./backend/graphql-gateway
   <<: *build_template
 
 # Test Jobs
