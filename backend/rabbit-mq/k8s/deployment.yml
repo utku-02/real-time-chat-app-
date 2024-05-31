@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rabbitmq
+  name: rabbit-mq
   namespace: real-time-chat-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rabbitmq
+      app: rabbit-mq
   template:
     metadata:
       labels:
-        app: rabbitmq
+        app: rabbit-mq
     spec:
       containers:
         - name: rabbitmq
