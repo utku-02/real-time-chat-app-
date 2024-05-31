@@ -46,3 +46,4 @@ spec:
                 name: frontend
                 port:
                   number: 80
+                namespace: real-time-chat-app
