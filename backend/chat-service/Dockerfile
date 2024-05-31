@@ -6,7 +6,6 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY ../common/rabbit-mq ./common/rabbit-mq
 
 EXPOSE 3001
 

@@ -5,7 +5,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
-COPY ./backend/common ./common
 COPY . .
 
 EXPOSE 3000
