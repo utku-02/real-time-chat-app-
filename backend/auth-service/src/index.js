@@ -4,7 +4,7 @@ const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('./utils/authMiddleware');
-const { publishToQueue, consumeFromQueue } = require('../../common/rabbit-mq');
+const { publishToQueue, consumeFromQueue } = require('../common/rabbit-mq');
 require('dotenv').config();
 
 const app = express();

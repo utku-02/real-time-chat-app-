@@ -2,8 +2,7 @@ const { ApolloServer, gql } = require('apollo-server');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { publishToQueue } = require('../common/rabbit-mq/producer');
-const { consumeFromQueue } = require('../common/rabbit-mq/consumer');
+const { publishToQueue, consumeFromQueue } = require('../common/rabbit-mq');
 require('dotenv').config();
 
 const url = process.env.MONGODB_URI || 'mongodb://mongo:27017/userdb';

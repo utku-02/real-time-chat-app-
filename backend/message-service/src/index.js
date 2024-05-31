@@ -3,7 +3,7 @@ const ApolloClient = require('apollo-boost').default;
 const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
 const authMiddleware = require('./utils/authMiddleware');
-const { publishToQueue, consumeFromQueue } = require('../../common/rabbit-mq');
+const { publishToQueue, consumeFromQueue } = require('../common/rabbit-mq');
 require('dotenv').config();
 
 const app = express();
