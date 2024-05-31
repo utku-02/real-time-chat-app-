@@ -29,7 +29,7 @@ variables:
     - docker:dind
   script:
     - *docker_login
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f $SERVICE_PATH/Dockerfile .
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f $SERVICE_PATH/Dockerfile ..
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   only:
     - main
