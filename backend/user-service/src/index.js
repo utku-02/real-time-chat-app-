@@ -2,6 +2,8 @@ const express = require('express');
 const ApolloClient = require('apollo-boost').default;
 const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
+const { publishToQueue } = require('../../common/rabbit-mq/producer');
+const { consumeFromQueue } = require('../../common/rabbit-mq/consumer');
 require('dotenv').config();
 
 const app = express();
@@ -9,7 +11,7 @@ const port = process.env.PORT || 3000;
 const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',  // URI til GraphQL gateway
+  uri: process.env.GRAPHQL_URI || 'http://graphql-gateway:4000/graphql',
   fetch
 });
 
@@ -32,11 +34,20 @@ app.post('/register', async (req, res) => {
       mutation: REGISTER_USER,
       variables: { email, password }
     });
+
+    const message = JSON.stringify({
+      event: 'USER_REGISTERED',
+      data: result.data.register,
+    });
+    await publishToQueue('user-events', message);
+
     res.status(201).send(result.data.register);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error(error);
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
+
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -76,6 +87,13 @@ app.get('/users', async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
+});
+
+consumeFromQueue('user-events', async (message) => {
+  const parsedMessage = JSON.parse(message);
+
+  // Process the message and handle it as needed
+  console.log(`Processed message: ${message}`);
 });
 
 app.listen(port, () => {

@@ -3,6 +3,8 @@ const ApolloClient = require('apollo-boost').default;
 const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
 const authMiddleware = require('./utils/authMiddleware');
+const { publishToQueue } = require('../../common/rabbit-mq/producer');
+const { consumeFromQueue } = require('../../common/rabbit-mq/consumer');
 require('dotenv').config();
 
 const app = express();
@@ -58,6 +60,13 @@ app.post(`${baseUrl}/chats/:id/messages`, authMiddleware, async (req, res) => {
       mutation: ADD_MESSAGE,
       variables: { chatId: req.params.id, senderId: req.user.userId, content }
     });
+
+    const message = JSON.stringify({
+      event: 'NEW_MESSAGE',
+      data: result.data.addMessage,
+    });
+    await publishToQueue('chat-messages', message);
+
     res.status(201).send(result.data.addMessage);
   } catch (error) {
     res.status(500).send(error.message);
@@ -93,6 +102,11 @@ app.get(`${baseUrl}/chats`, authMiddleware, async (req, res) => {
 
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+});
+
+consumeFromQueue('chat-messages', (message) => {
+  console.log(`Received message: ${message}`);
+  // Process the chat message...
 });
 
 app.listen(port, () => {

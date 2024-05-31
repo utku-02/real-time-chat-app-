@@ -26,6 +26,8 @@ spec:
             secretKeyRef:
               name: auth-service-secrets
               key: JWT_SECRET
+        - name: RABBITMQ_URL
+          value: "amqp://user:password@rabbitmq:5672"
         resources:
           requests:
             memory: "256Mi"

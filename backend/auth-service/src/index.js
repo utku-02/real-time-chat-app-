@@ -2,9 +2,9 @@ const express = require('express');
 const ApolloClient = require('apollo-boost').default;
 const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('./utils/authMiddleware');
+const { publishToQueue, consumeFromQueue } = require('../../common/rabbit-mq');
 require('dotenv').config();
 
 const app = express();
@@ -64,6 +64,11 @@ app.post(`${baseUrl}/login`, async (req, res) => {
 
 app.get(`${baseUrl}/protected`, authMiddleware, (req, res) => {
   res.send('This is a protected route');
+});
+
+consumeFromQueue('user-events', (message) => {
+  console.log(`Received user event: ${message}`);
+  // Process the user event...
 });
 
 app.listen(port, () => {

@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+COPY ../common/rabbit-mq ./common/rabbit-mq
 
 EXPOSE 4000
-CMD ["node", "src/index.js"]
+CMD ["node", "index.js"]

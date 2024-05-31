@@ -3,12 +3,12 @@
     "version": "1.0.0",
     "main": "index.js",
     "dependencies": {
-      "apollo-server": "^3.13.0",
-      "bcryptjs": "^2.4.3",
-      "dotenv": "^16.4.5",
-      "graphql": "^15.5.0",
-      "jsonwebtoken": "^9.0.2",
-      "mongodb": "^3.6.0"
+        "amqplib": "^0.10.4",
+        "apollo-server": "^3.13.0",
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^16.4.5",
+        "graphql": "^15.5.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongodb": "^3.6.0"
     }
-  }
-  
+}

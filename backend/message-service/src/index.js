@@ -3,6 +3,7 @@ const ApolloClient = require('apollo-boost').default;
 const gql = require('graphql-tag');
 const fetch = require('cross-fetch');
 const authMiddleware = require('./utils/authMiddleware');
+const { publishToQueue, consumeFromQueue } = require('../../common/rabbit-mq');
 require('dotenv').config();
 
 const app = express();
@@ -26,6 +27,7 @@ app.post(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
         senderId
         receiverId
         content
+        timestamp
       }
     }
   `;
@@ -35,6 +37,13 @@ app.post(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
       mutation: CREATE_MESSAGE,
       variables: { senderId: req.user.userId, receiverId, content }
     });
+
+    const message = JSON.stringify({
+      event: 'NEW_MESSAGE',
+      data: result.data.createMessage,
+    });
+    await publishToQueue('chat-messages', message);
+
     res.status(201).send(result.data.createMessage);
   } catch (error) {
     res.status(500).send(error.message);
@@ -49,6 +58,7 @@ app.get(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
         senderId
         receiverId
         content
+        timestamp
       }
     }
   `;
@@ -61,6 +71,37 @@ app.get(`${baseUrl}/messages`, authMiddleware, async (req, res) => {
     res.send(result.data.messages);
   } catch (error) {
     res.status(500).send(error.message);
+  }
+});
+
+consumeFromQueue('chat-messages', async (message) => {
+  const parsedMessage = JSON.parse(message);
+
+  // Process the message using GraphQL Gateway
+  const ADD_MESSAGE = gql`
+    mutation AddMessage($chatId: ID!, $senderId: ID!, $content: String!) {
+      addMessage(chatId: $chatId, senderId: $senderId, content: $content) {
+        id
+        senderId
+        content
+        timestamp
+      }
+    }
+  `;
+
+  try {
+    const result = await client.mutate({
+      mutation: ADD_MESSAGE,
+      variables: {
+        chatId: parsedMessage.data.chatId,
+        senderId: parsedMessage.data.senderId,
+        content: parsedMessage.data.content,
+      }
+    });
+
+    console.log(`Processed message: ${result.data.addMessage}`);
+  } catch (error) {
+    console.error(`Failed to process message: ${error.message}`);
   }
 });
 

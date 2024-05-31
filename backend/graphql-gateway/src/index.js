@@ -2,6 +2,8 @@ const { ApolloServer, gql } = require('apollo-server');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { publishToQueue } = require('../common/rabbit-mq/producer');
+const { consumeFromQueue } = require('../common/rabbit-mq/consumer');
 require('dotenv').config();
 
 const url = process.env.MONGODB_URI || 'mongodb://mongo:27017/userdb';
@@ -68,6 +70,10 @@ const resolvers = {
     register: async (_, { email, password }) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const result = await db.collection('users').insertOne({ email, password: hashedPassword });
+
+      const message = JSON.stringify({ event: 'USER_REGISTERED', data: { id: result.insertedId, email } });
+      await publishToQueue('user-events', message);
+
       return { id: result.insertedId, email };
     },
     login: async (_, { email, password }) => {
@@ -82,10 +88,18 @@ const resolvers = {
     },
     createMessage: async (_, { senderId, receiverId, content }) => {
       const result = await db.collection('messages').insertOne({ senderId, receiverId, content });
+
+      const message = JSON.stringify({ event: 'NEW_MESSAGE', data: result.ops[0] });
+      await publishToQueue('chat-messages', message);
+
       return { id: result.insertedId, senderId, receiverId, content };
     },
     createChat: async (_, { userIds }) => {
       const result = await db.collection('chats').insertOne({ users: userIds, messages: [] });
+
+      const message = JSON.stringify({ event: 'NEW_CHAT', data: { id: result.insertedId, users: userIds } });
+      await publishToQueue('chat-events', message);
+
       return { id: result.insertedId, users: userIds, messages: [] };
     },
     addMessage: async (_, { chatId, senderId, content }) => {
@@ -97,6 +111,10 @@ const resolvers = {
         { _id: new ObjectId(chatId) },
         { $push: { messages: message } }
       );
+
+      const messageEvent = JSON.stringify({ event: 'NEW_MESSAGE', data: message });
+      await publishToQueue('chat-messages', messageEvent);
+
       return message;
     }
   }
