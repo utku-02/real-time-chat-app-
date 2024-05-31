@@ -29,7 +29,7 @@ variables:
     - docker:dind
   script:
     - *docker_login
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $SERVICE_PATH ./backend
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f $SERVICE_PATH/Dockerfile .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   only:
     - main
@@ -223,4 +223,3 @@ deploy_frontend:
   variables:
     K8S_PATH: frontend/k8s
   <<: *deploy_template
-
