@@ -65,6 +65,8 @@ variables:
     - kubectl apply -f $K8S_PATH$K8S_NAME/k8s/service.yml
   only:
     - main
+  needs:
+    - deploy_generel
 
 # Build Jobs
 # build_user_service:
@@ -142,13 +144,13 @@ build_frontend:
 #     PORT: 3003
 #   <<: *test_template
 
-# test_frontend:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-#     SERVICE_NAME: frontend
-#     PORT: 3004
-#   <<: *test_template
+test_frontend:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
+    SERVICE_NAME: frontend
+    PORT: 3004
+  <<: *test_template
 
 # test_graphql_gateway:
 #   stage: test
@@ -171,6 +173,7 @@ deploy_generel:
     - kubectl config use-context default-context
     - kubectl apply -f kubernetes/k8s/ingress.yml
     - kubectl apply -f kubernetes/k8s/namespace.yml
+    - kubectl delete deployments --all -n real-time-chat-app
   only:
     - main
 
