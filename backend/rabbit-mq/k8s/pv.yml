@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
   hostPath:
-    path: "~/slet/"
+    path: "/mnt/data"
   claimRef:
     namespace: real-time-chat-app
     name: rabbitmq-pvc

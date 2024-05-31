@@ -11,3 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/data/dbmongo"
+  claimRef:
+    namespace: real-time-chat-app
+    name: mongo-volume-pvc
+
