@@ -2,10 +2,13 @@ FROM node:16
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY backend/auth-service/package*.json ./
 RUN npm install
 
-COPY . .
+COPY backend/auth-service ./auth-service
+COPY backend/common ./common
+
+WORKDIR /usr/src/app/auth-service
 
 EXPOSE 3000
 
