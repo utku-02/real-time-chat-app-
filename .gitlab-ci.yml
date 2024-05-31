@@ -221,5 +221,5 @@ deploy_graphql_gateway:
 
 deploy_frontend:
   variables:
-    K8S_NAME: frontends
+    K8S_NAME: frontend
   <<: *deploy_template
