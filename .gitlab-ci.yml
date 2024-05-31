@@ -159,21 +159,21 @@ test_frontend:
   <<: *test_template
 
 # Deploy Jobs
-# deploy_generel:
-#   stage: deploy
-#   image:
-#     name: lachlanevenson/k8s-kubectl:latest
-#     entrypoint: ["/bin/sh", "-c"]
-#   script:
-#     - kubectl config set-cluster default-cluster --server=$KUBE_URL
-#     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
-#     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
-#     - kubectl config use-context default-context
-#     - kubectl apply -f kubernetes/k8s/ingress.yml
-#     - kubectl apply -f kubernetes/k8s/namespace.yml
-#     - kubectl delete deployments --all -n real-time-chat-app
-#   only:
-#     - main
+deploy_generel:
+  stage: deploy
+  image:
+    name: lachlanevenson/k8s-kubectl:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - kubectl config set-cluster default-cluster --server=$KUBE_URL
+    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
+    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
+    - kubectl config use-context default-context
+    - kubectl apply -f kubernetes/k8s/ingress.yml
+    - kubectl apply -f kubernetes/k8s/namespace.yml
+    - kubectl delete deployments --all -n real-time-chat-app
+  only:
+    - main
 
 # deploy_mongo:
 #   variables:
