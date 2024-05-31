@@ -29,7 +29,7 @@ variables:
     - docker:dind
   script:
     - *docker_login
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG -f $SERVICE_PATH/Dockerfile ..
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG $SERVICE_PATH
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   only:
     - main
@@ -69,42 +69,42 @@ build_user_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-    SERVICE_PATH: backend/user-service
+    SERVICE_PATH: ./backend/user-service
   <<: *build_template
 
 build_chat_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-    SERVICE_PATH: backend/chat-service
+    SERVICE_PATH: ./backend/chat-service
   <<: *build_template
 
 build_message_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-    SERVICE_PATH: backend/message-service
+    SERVICE_PATH: ./backend/message-service
   <<: *build_template
 
 build_auth_service:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-    SERVICE_PATH: backend/auth-service
+    SERVICE_PATH: ./backend/auth-service
   <<: *build_template
 
 build_frontend:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-    SERVICE_PATH: frontend
+    SERVICE_PATH: ./frontend
   <<: *build_template
 
 build_graphql_gateway:
   stage: build
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY
-    SERVICE_PATH: backend/graphql-gateway
+    SERVICE_PATH: ./backend/graphql-gateway
   <<: *build_template
 
 # Test Jobs
@@ -223,3 +223,4 @@ deploy_frontend:
   variables:
     K8S_PATH: frontend/k8s
   <<: *deploy_template
+
