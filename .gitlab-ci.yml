@@ -68,34 +68,34 @@ variables:
   needs:
     - deploy_generel
 
-# Build Jobs
-# build_user_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-#     SERVICE_PATH: ./backend/user-service
-#   <<: *build_template
+Build Jobs
+build_user_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
+    SERVICE_PATH: ./backend/user-service
+  <<: *build_template
 
-# build_chat_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-#     SERVICE_PATH: ./backend/chat-service
-#   <<: *build_template
+build_chat_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
+    SERVICE_PATH: ./backend/chat-service
+  <<: *build_template
 
-# build_message_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-#     SERVICE_PATH: ./backend/message-service
-#   <<: *build_template
+build_message_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
+    SERVICE_PATH: ./backend/message-service
+  <<: *build_template
 
-# build_auth_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-#     SERVICE_PATH: ./backend/auth-service
-#   <<: *build_template
+build_auth_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
+    SERVICE_PATH: ./backend/auth-service
+  <<: *build_template
 
 build_frontend:
   stage: build
