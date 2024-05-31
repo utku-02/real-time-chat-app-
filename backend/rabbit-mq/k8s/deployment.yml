@@ -37,4 +37,4 @@ spec:
       volumes:
         - name: rabbitmq-storage
           persistentVolumeClaim:
-            claimName: rabbitmq-pvc
+            claimName: rabbit-mq-pvc

@@ -5,10 +5,10 @@ metadata:
 spec:
   storageClassName: "local-path"
   capacity:
-    storage: 1Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/mnt/data"
   claimRef:
