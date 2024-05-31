@@ -59,8 +59,10 @@ variables:
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
-    - kubectl apply -f $K8S_PATH/deployment.yml
-    - kubectl apply -f $K8S_PATH/service.yml
+    - kubectl delete deployment $K8S_NAME
+    - kubectl delete service $K8S_NAME
+    - kubectl apply -f $K8S_PATH/$K8S_NAME/k8s/deployment.yml
+    - kubectl apply -f $K8S_PATH/$K8S_NAME/k8s/service.yml
   only:
     - main
 
@@ -157,23 +159,6 @@ test_graphql_gateway:
   <<: *test_template
 
 # Deploy Jobs
-deploy_database:
-  stage: deploy
-  image:
-    name: lachlanevenson/k8s-kubectl:latest
-    entrypoint: ["/bin/sh", "-c"]
-  script:
-    - kubectl config set-cluster default-cluster --server=$KUBE_URL
-    - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
-    - kubectl config set-credentials default-user --token=$KUBE_TOKEN
-    - kubectl config use-context default-context
-    - kubectl apply -f database/k8s/deployment.yml
-    - kubectl apply -f database/k8s/service.yml
-    - kubectl apply -f database/k8s/pv.yml
-    - kubectl apply -f database/k8s/pvc.yml
-  only:
-    - main
-
 deploy_generel:
   stage: deploy
   image:
@@ -189,38 +174,51 @@ deploy_generel:
   only:
     - main
 
+deploy_mongo:
+  variables:
+    K8S_NAME: mongo
+    K8S_PATH: database
+  <<: *deploy_template
+
 deploy_rabbit_mq:
   variables:
-    K8S_PATH: backend/rabbit-mq/k8s
+    K8S_NAME: rabbit-mq
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_user_service:
   variables:
-    K8S_PATH: backend/user-service/k8s
+    K8S_NAME: user-service
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_chat_service:
   variables:
-    K8S_PATH: backend/chat-service/k8s
+    K8S_NAME: chat-service
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_message_service:
   variables:
-    K8S_PATH: backend/message-service/k8s
+    K8S_NAME: message-service
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_auth_service:
   variables:
-    K8S_PATH: backend/auth-service/k8s
+    K8S_NAME: auth-service
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_graphql_gateway:
   variables:
-    K8S_PATH: backend/graphql-gateway/k8s
+    K8S_NAME: graphql-gateway
+    K8S_PATH: backend
   <<: *deploy_template
 
 deploy_frontend:
   variables:
-    K8S_PATH: frontend/k8s
+    K8S_NAME: frontend
+    K8S_PATH: 
   <<: *deploy_template
 
