@@ -171,51 +171,50 @@ deploy_generel:
     - kubectl config use-context default-context
     - kubectl apply -f kubernetes/k8s/ingress.yml
     - kubectl apply -f kubernetes/k8s/namespace.yml
-    - kubectl delete deployments --all -n real-time-chat-app
   only:
     - main
 
-# deploy_mongo:
-#   variables:
-#     K8S_NAME: mongo
-#     K8S_PATH: database/
-#   <<: *deploy_template
+deploy_mongo:
+  variables:
+    K8S_NAME: mongo
+    K8S_PATH: database/
+  <<: *deploy_template
 
-# deploy_rabbit_mq:
-#   variables:
-#     K8S_NAME: rabbit-mq
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_rabbit_mq:
+  variables:
+    K8S_NAME: rabbit-mq
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_user_service:
-#   variables:
-#     K8S_NAME: user-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_user_service:
+  variables:
+    K8S_NAME: user-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_chat_service:
-#   variables:
-#     K8S_NAME: chat-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_chat_service:
+  variables:
+    K8S_NAME: chat-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_message_service:
-#   variables:
-#     K8S_NAME: message-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_message_service:
+  variables:
+    K8S_NAME: message-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_auth_service:
-#   variables:
-#     K8S_NAME: auth-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_auth_service:
+  variables:
+    K8S_NAME: auth-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_graphql_gateway:
-#   variables:
-#     K8S_NAME: graphql-gateway
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_graphql_gateway:
+  variables:
+    K8S_NAME: graphql-gateway
+    K8S_PATH: backend/
+  <<: *deploy_template
 
 deploy_frontend:
   variables:
