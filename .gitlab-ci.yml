@@ -68,7 +68,7 @@ variables:
   needs:
     - deploy_generel
 
-Build Jobs
+##Build Jobs
 build_user_service:
   stage: build
   variables:
