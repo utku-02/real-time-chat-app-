@@ -65,8 +65,6 @@ variables:
     - kubectl apply -f $K8S_PATH$K8S_NAME/k8s/service.yml
   only:
     - main
-  needs:
-    - deploy_generel
 
 # Build Jobs
 # build_user_service:
@@ -173,7 +171,6 @@ deploy_generel:
     - kubectl config use-context default-context
     - kubectl apply -f kubernetes/k8s/ingress.yml
     - kubectl apply -f kubernetes/k8s/namespace.yml
-    - kubectl delete deployments --all -n real-time-chat-app
   only:
     - main
 
