@@ -8,7 +8,7 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Recycle
   hostPath:
     path: "/mnt/data"
   claimRef:

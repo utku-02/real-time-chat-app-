@@ -59,8 +59,6 @@ variables:
     - kubectl config set-context default-context --cluster=default-cluster --namespace=$KUBE_NAMESPACE --user=default-user
     - kubectl config set-credentials default-user --token=$KUBE_TOKEN
     - kubectl config use-context default-context
-    - kubectl delete deployment $K8S_NAME -n real-time-chat-app
-    - kubectl delete service $K8S_NAME -n real-time-chat-app
     - kubectl apply -f $K8S_PATH$K8S_NAME/k8s/deployment.yml
     - kubectl apply -f $K8S_PATH$K8S_NAME/k8s/service.yml
   only:
