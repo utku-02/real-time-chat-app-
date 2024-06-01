@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: graphql-gateway
+  name: graphql
   namespace: real-time-chat-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: graphql-gateway
+      app: graphql
   template:
     metadata:
       labels:
-        app: graphql-gateway
+        app: graphql
     spec:
       containers:
-      - name: graphql-gateway
-        image: grejs420/graphql-gateway:latest
+      - name: graphql
+        image: grejs420/graphql:latest
         ports:
         - containerPort: 4000
         env:
