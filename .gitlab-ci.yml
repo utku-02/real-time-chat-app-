@@ -14,7 +14,7 @@ variables:
   CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
   CI_REGISTRY_IMAGE_AUTH_SERVICE: docker.io/grejs420/auth-service
   CI_REGISTRY_IMAGE_FRONTEND: docker.io/grejs420/frontend
-  CI_REGISTRY_IMAGE_GRAPHQL_GATEWAY: docker.io/grejs420/graphql
+  CI_REGISTRY_IMAGE_GRAPHQL: docker.io/grejs420/graphql
   KUBE_URL: https://swwao.courses.orbit.au.dk/grp-6-kube
   KUBE_TOKEN: $KUBE_TOKEN
   KUBE_NAMESPACE: default
