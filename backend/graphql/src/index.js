@@ -1,9 +1,15 @@
 const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./graphql/schema');
-const resolvers = require('./graphql/resolvers');
+const { getResolvers } = require('./graphql/resolvers');
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const initializeServer = async () => {
+  const resolvers = await getResolvers();
 
-server.listen().then(({ url }) => {
-  console.log(`GraphQL service running at ${url}`);
-});
+  const server = new ApolloServer({ typeDefs, resolvers });
+
+  server.listen().then(({ url }) => {
+    console.log(`GraphQL service running at ${url}`);
+  });
+};
+
+initializeServer();
