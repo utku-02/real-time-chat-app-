@@ -188,6 +188,8 @@ deploy_generel:
     - kubectl config use-context default-context
     - kubectl apply -f kubernetes/k8s/ingress.yml
     - kubectl apply -f kubernetes/k8s/namespace.yml
+    - kubectl apply -f kubernetes/k8s/secrets.yml
+    - kubectl apply -f kubernetes/k8s/configmap.yml
   only:
     - main
 
