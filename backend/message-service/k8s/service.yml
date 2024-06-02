@@ -8,6 +8,5 @@ spec:
     app: message-service
   ports:
     - protocol: TCP
-      port: 3002
-      targetPort: 3002
-  type: ClusterIP
+      port: 3003
+      targetPort: 3003

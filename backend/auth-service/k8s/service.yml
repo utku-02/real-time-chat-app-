@@ -8,6 +8,5 @@ spec:
     app: auth-service
   ports:
     - protocol: TCP
-      port: 3000
-      targetPort: 3000
-  type: ClusterIP
+      port: 3004
+      targetPort: 3004

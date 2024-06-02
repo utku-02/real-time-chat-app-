@@ -17,19 +17,26 @@ spec:
       - name: auth-service
         image: grejs420/auth-service:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 3004
+        envFrom:
+        - configMapRef:
+            name: real-time-chat-config
         env:
-        - name: BASE_URL
-          value: "/swwao.courses.orbit.au.dk/grp-6/auth"
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: auth-service-secrets
+              name: real-time-chat-secrets
               key: JWT_SECRET
-        - name: GRAPHQL_URI
-          value: "http://graphql-gateway:4000/graphql"
-        - name: RABBITMQ_URL
-          value: "amqp://user:password@rabbitmq:5672"
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: RABBITMQ_DEFAULT_PASS
         resources:
           requests:
             memory: "64Mi"

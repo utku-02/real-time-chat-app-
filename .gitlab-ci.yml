@@ -8,6 +8,7 @@ variables:
   CI_REGISTRY: https://index.docker.io/v1/
   CI_REGISTRY_USER: grejs420
   CI_REGISTRY_PASSWORD: rovgard1!
+  CI_REGISTRY_IMAGE_USER_SERVICE: docker.io/grejs420/api-gateway
   CI_REGISTRY_IMAGE_USER_SERVICE: docker.io/grejs420/user-service
   CI_REGISTRY_IMAGE_CHAT_SERVICE: docker.io/grejs420/chat-service
   CI_REGISTRY_IMAGE_MESSAGE_SERVICE: docker.io/grejs420/message-service
@@ -67,33 +68,40 @@ variables:
     - deploy_generel
 
 ##Build Jobs
-# build_user_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-#     SERVICE_PATH: ./backend/user-service
-#   <<: *build_template
+build_api_gateway:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_API_GATEWAY
+    SERVICE_PATH: ./backend/api-gateway
+  <<: *build_template
 
-# build_chat_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-#     SERVICE_PATH: ./backend/chat-service
-#   <<: *build_template
+build_user_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
+    SERVICE_PATH: ./backend/user-service
+  <<: *build_template
 
-# build_message_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-#     SERVICE_PATH: ./backend/message-service
-#   <<: *build_template
+build_chat_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
+    SERVICE_PATH: ./backend/chat-service
+  <<: *build_template
 
-# build_auth_service:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-#     SERVICE_PATH: ./backend/auth-service
-#   <<: *build_template
+build_message_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
+    SERVICE_PATH: ./backend/message-service
+  <<: *build_template
+
+build_auth_service:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
+    SERVICE_PATH: ./backend/auth-service
+  <<: *build_template
 
 build_graphql:
   stage: build
@@ -102,61 +110,70 @@ build_graphql:
     SERVICE_PATH: ./backend/graphql
   <<: *build_template
 
-# build_frontend:
-#   stage: build
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-#     SERVICE_PATH: ./frontend
-#   <<: *build_template
+build_frontend:
+  stage: build
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
+    SERVICE_PATH: ./frontend
+  <<: *build_template
 
-##Test Jobs
-# test_user_service:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
-#     SERVICE_NAME: user-service
-#     PORT: 3000
-#   <<: *test_template
+# Test Jobs
+test_api_gateway:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_API_GATEWAY
+    SERVICE_NAME: api-gateway
+    PORT: 3000
+  <<: *test_template
 
-# test_chat_service:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
-#     SERVICE_NAME: chat-service
-#     PORT: 3001
-#   <<: *test_template
+test_user_service:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_USER_SERVICE
+    SERVICE_NAME: user-service
+    PORT: 3001
+  <<: *test_template
 
-# test_message_service:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
-#     SERVICE_NAME: message-service
-#     PORT: 3002
-#   <<: *test_template
+test_chat_service:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_CHAT_SERVICE
+    SERVICE_NAME: chat-service
+    PORT: 3002
+  <<: *test_template
 
-# test_auth_service:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
-#     SERVICE_NAME: auth-service
-#     PORT: 3003
-#   <<: *test_template
+test_message_service:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_MESSAGE_SERVICE
+    SERVICE_NAME: message-service
+    PORT: 3003
+  <<: *test_template
+
+test_auth_service:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_AUTH_SERVICE
+    SERVICE_NAME: auth-service
+    PORT: 3004
+  <<: *test_template
 
 test_graphql:
   stage: test
   variables:
     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_GRAPHQL
     SERVICE_NAME: graphql
-    PORT: 3005
+    PORT: 4000
   <<: *test_template
 
-# test_frontend:
-#   stage: test
-#   variables:
-#     CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
-#     SERVICE_NAME: frontend
-#     PORT: 3004
-#   <<: *test_template
+test_frontend:
+  stage: test
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE_FRONTEND
+    SERVICE_NAME: frontend
+    PORT: 80
+  <<: *test_template
+
 
 # Deploy Jobs
 deploy_generel:
@@ -174,41 +191,47 @@ deploy_generel:
   only:
     - main
 
-# deploy_mongo:
-#   variables:
-#     K8S_NAME: mongo
-#     K8S_PATH: database/
-#   <<: *deploy_template
+deploy_mongo:
+  variables:
+    K8S_NAME: mongo
+    K8S_PATH: database/
+  <<: *deploy_template
 
-# deploy_rabbit_mq:
-#   variables:
-#     K8S_NAME: rabbit-mq
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_rabbit_mq:
+  variables:
+    K8S_NAME: rabbit-mq
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_user_service:
-#   variables:
-#     K8S_NAME: user-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_api_gateway:
+  variables:
+    K8S_NAME: api-gateway
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_chat_service:
-#   variables:
-#     K8S_NAME: chat-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_user_service:
+  variables:
+    K8S_NAME: user-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_message_service:
-#   variables:
-#     K8S_NAME: message-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_chat_service:
+  variables:
+    K8S_NAME: chat-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
-# deploy_auth_service:
-#   variables:
-#     K8S_NAME: auth-service
-#     K8S_PATH: backend/
-#   <<: *deploy_template
+deploy_message_service:
+  variables:
+    K8S_NAME: message-service
+    K8S_PATH: backend/
+  <<: *deploy_template
+
+deploy_auth_service:
+  variables:
+    K8S_NAME: auth-service
+    K8S_PATH: backend/
+  <<: *deploy_template
 
 deploy_graphql:
   variables:
@@ -216,8 +239,8 @@ deploy_graphql:
     K8S_PATH: backend/
   <<: *deploy_template
 
-# deploy_frontend:
-#   variables:
-#     K8S_NAME: frontend
-#     K8S_PATH: 
-#   <<: *deploy_template
+deploy_frontend:
+  variables:
+    K8S_NAME: frontend
+    K8S_PATH: 
+  <<: *deploy_template

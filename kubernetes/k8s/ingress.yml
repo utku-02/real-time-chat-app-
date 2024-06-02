@@ -19,28 +19,28 @@ spec:
               service:
                 name: auth-service
                 port:
-                  number: 3000
+                  number: 3004
           - path: /grp-6/user(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: user-service
                 port:
-                  number: 3000
+                  number: 3001
           - path: /grp-6/chat(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: chat-service
                 port:
-                  number: 3001
+                  number: 3002
           - path: /grp-6/message(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: message-service
                 port:
-                  number: 3002
+                  number: 3003
           - path: /grp-6/frontend(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
@@ -48,3 +48,10 @@ spec:
                 name: frontend
                 port:
                   number: 80
+          - path: /grp-6/graphql(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: graphql
+                port:
+                  number: 4000
