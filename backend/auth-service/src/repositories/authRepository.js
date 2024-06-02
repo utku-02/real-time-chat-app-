@@ -1,34 +1,36 @@
-const { GraphQLClient, gql } = require('graphql-request');
+(async () => {
+    const { GraphQLClient, gql } = await import('graphql-request');
 
-const client = new GraphQLClient(process.env.GRAPHQL_URL);
+    const client = new GraphQLClient(process.env.GRAPHQL_URL);
 
-exports.createUser = async (userData) => {
-    const mutation = gql`
-        mutation($input: CreateUserInput!) {
-            createUser(input: $input) {
-                id
-                email
-                username
+    exports.createUser = async (userData) => {
+        const mutation = gql`
+            mutation($input: CreateUserInput!) {
+                createUser(input: $input) {
+                    id
+                    email
+                    username
+                }
             }
-        }
-    `;
-    const variables = { input: userData };
-    const data = await client.request(mutation, variables);
-    return data.createUser;
-};
+        `;
+        const variables = { input: userData };
+        const data = await client.request(mutation, variables);
+        return data.createUser;
+    };
 
-exports.getUserByEmail = async (email) => {
-    const query = gql`
-        query($email: String!) {
-            userByEmail(email: $email) {
-                id
-                email
-                username
-                password
+    exports.getUserByEmail = async (email) => {
+        const query = gql`
+            query($email: String!) {
+                userByEmail(email: $email) {
+                    id
+                    email
+                    username
+                    password
+                }
             }
-        }
-    `;
-    const variables = { email };
-    const data = await client.request(query, variables);
-    return data.userByEmail;
-};
+        `;
+        const variables = { email };
+        const data = await client.request(query, variables);
+        return data.userByEmail;
+    };
+})();
