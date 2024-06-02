@@ -5,4 +5,5 @@ metadata:
   namespace: real-time-chat-app
 data:
   GRAPHQL_URL: "http://graphql:4000/graphql"
-  RABBITMQ_URL: "amqp://rabbit-mq"
+  RABBITMQ_HOST: "rabbit-mq"
+  RABBITMQ_PORT: "5672"

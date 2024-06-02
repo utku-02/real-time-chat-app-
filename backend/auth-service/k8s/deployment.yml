@@ -38,10 +38,7 @@ spec:
               name: real-time-chat-secrets
               key: RABBITMQ_DEFAULT_PASS
         - name: RABBITMQ_URL
-        valueFrom:
-          configMapKeyRef:
-            name: real-time-chat-config
-            key: RABBITMQ_URL
+          value: "amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@$(RABBITMQ_HOST):$(RABBITMQ_PORT)"
         resources:
           requests:
             memory: "64Mi"
