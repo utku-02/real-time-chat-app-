@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: grejs420/user-service:latest
+        image: grejs420/user-service:main
         ports:
         - containerPort: 3001
         envFrom:

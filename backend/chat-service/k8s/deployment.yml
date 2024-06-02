@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: chat-service
-        image: grejs420/chat-service:latest
+        image: grejs420/chat-service:main
         ports:
         - containerPort: 3002
         envFrom:

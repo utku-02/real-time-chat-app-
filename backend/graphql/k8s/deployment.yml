@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: graphql
-        image: grejs420/graphql:latest
+        image: grejs420/graphql:main
         ports:
         - containerPort: 4000
         envFrom:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: grejs420/auth-service:latest
+        image: grejs420/auth-service:main
         ports:
         - containerPort: 3004
         envFrom:

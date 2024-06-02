@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: message-service
-        image: grejs420/message-service:latest
+        image: grejs420/message-service:main
         ports:
         - containerPort: 3003
         envFrom:
