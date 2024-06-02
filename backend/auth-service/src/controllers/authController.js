@@ -1,7 +1,7 @@
 const authRepository = require('../repositories/authRepository');
 const producer = require('../utils/producer');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 exports.registerUser = async (userData) => {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
