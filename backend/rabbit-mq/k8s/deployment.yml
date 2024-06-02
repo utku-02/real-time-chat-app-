@@ -21,9 +21,20 @@ spec:
             - containerPort: 15672
           env:
             - name: RABBITMQ_DEFAULT_USER
-              value: user
+              valueFrom:
+                secretKeyRef:
+                  name: real-time-chat-secrets
+                  key: RABBITMQ_DEFAULT_USER
             - name: RABBITMQ_DEFAULT_PASS
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: real-time-chat-secrets
+                  key: RABBITMQ_DEFAULT_PASS
+            - name: RABBITMQ_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: real-time-chat-config
+                  key: RABBITMQ_URL
           volumeMounts:
             - mountPath: "/var/lib/rabbitmq"
               name: rabbitmq-storage

@@ -37,6 +37,11 @@ spec:
             secretKeyRef:
               name: real-time-chat-secrets
               key: RABBITMQ_DEFAULT_PASS
+        - name: RABBITMQ_URL
+        valueFrom:
+          configMapKeyRef:
+            name: real-time-chat-config
+            key: RABBITMQ_URL
         resources:
           requests:
             memory: "64Mi"
