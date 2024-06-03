@@ -10,6 +10,9 @@ app.use(bodyParser.json());
 
 app.post('/chats', chatController.createChatRoom);
 app.get('/chats/:id', chatController.getChatRoom);
+app.put('/chats/:id', chatController.updateChatRoom);
+app.delete('/chats/:id', chatController.deleteChatRoom);
+app.post('/chats/:id/invite', chatController.inviteUsers);
 
 app.listen(port, () => {
   console.log(`Chat service running on port ${port}`);

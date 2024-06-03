@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 app.post('/users', userController.createUser);
 app.put('/users/:id', userController.updateUser);
 app.get('/users/:id', userController.getUser);
+app.get('/users/:id/settings', userController.getUserSettings);
+app.put('/users/:id/settings', userController.updateUserSettings);
 
 app.listen(port, () => {
   console.log(`User service running on port ${port}`);

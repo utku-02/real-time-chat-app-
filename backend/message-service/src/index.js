@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 
 app.post('/messages', messageController.createMessage);
 app.get('/messages/:id', messageController.getMessage);
+app.get('/messages/chat/:chatId', messageController.getMessagesByChatId);
 
 app.listen(port, () => {
   console.log(`Message service running on port ${port}`);

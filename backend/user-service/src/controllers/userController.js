@@ -26,3 +26,21 @@ exports.getUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getUserSettings = async (req, res) => {
+    try {
+        const settings = await userService.getUserSettings(req.params.id);
+        res.status(200).json(settings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateUserSettings = async (req, res) => {
+    try {
+        const settings = await userService.updateUserSettings(req.params.id, req.body);
+        res.status(200).json(settings);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

@@ -39,6 +39,18 @@ spec:
               key: RABBITMQ_DEFAULT_PASS
         - name: RABBITMQ_URL
           value: "amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@$(RABBITMQ_HOST):$(RABBITMQ_PORT)"
+        - name: EMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: EMAIL_USER
+        - name: EMAIL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: EMAIL_PASS
+        - name: FRONTEND_URL
+          value: "http://your_frontend_url"
         resources:
           requests:
             memory: "64Mi"

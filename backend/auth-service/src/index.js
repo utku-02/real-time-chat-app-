@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 
 app.post('/auth/register', authController.registerUser);
 app.post('/auth/login', authController.loginUser);
+app.post('/auth/forgot-password', authController.forgotPassword);
+app.post('/auth/reset-password/:token', authController.resetPassword);
 
 app.listen(port, () => {
   console.log(`Auth service running on port ${port}`);

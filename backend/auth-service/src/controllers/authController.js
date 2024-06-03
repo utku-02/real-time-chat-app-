@@ -1,20 +1,37 @@
-const authRepository = require('../repositories/authRepository');
-const producer = require('../utils/producer');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const authService = require('../services/authService');
 
-exports.registerUser = async (userData) => {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const user = await authRepository.createUser({ ...userData, password: hashedPassword });
-    await producer.sendMessage('user.registered', user);
-    return user;
+exports.registerUser = async (req, res) => {
+    try {
+        const user = await authService.registerUser(req.body);
+        res.status(201).json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.loginUser = async ({ email, password }) => {
-    const user = await authRepository.getUserByEmail(email);
-    if (!user || !await bcrypt.compare(password, user.password)) {
-        throw new Error('Invalid email or password');
+exports.loginUser = async (req, res) => {
+    try {
+        const token = await authService.loginUser(req.body);
+        res.status(200).json({ token });
+    } catch (err) {
+        res.status(401).json({ error: err.message });
     }
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    return token;
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        await authService.forgotPassword(req.body.email);
+        res.status(200).json({ message: 'Password reset link sent' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        await authService.resetPassword(req.params.token, req.body.password);
+        res.status(200).json({ message: 'Password has been reset' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

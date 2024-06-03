@@ -17,7 +17,16 @@ exports.getUser = async (id) => {
     return await userRepository.getUser(id);
 };
 
+exports.getUserSettings = async (id) => {
+    return await userRepository.getUserSettings(id);
+};
+
+exports.updateUserSettings = async (id, settings) => {
+    const updatedSettings = await userRepository.updateUserSettings(id, settings);
+    await producer.sendMessage('user.settings.updated', { id, settings: updatedSettings });
+    return updatedSettings;
+};
+
 exports.handleUserUpdate = async (user) => {
     console.log('User updated:', user);
-    // Add logic to handle user update if necessary
 };

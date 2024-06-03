@@ -17,3 +17,12 @@ exports.getMessage = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getMessagesByChatId = async (req, res) => {
+    try {
+        const messages = await messageService.getMessagesByChatId(req.params.chatId);
+        res.status(200).json(messages);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

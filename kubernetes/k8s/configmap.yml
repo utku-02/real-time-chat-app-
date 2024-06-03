@@ -7,3 +7,4 @@ data:
   GRAPHQL_URL: "http://graphql:4000/graphql"
   RABBITMQ_HOST: "rabbit-mq"
   RABBITMQ_PORT: "5672"
+  FRONTEND_URL: "http://your_frontend_url"

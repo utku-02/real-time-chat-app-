@@ -1,93 +1,301 @@
-# real-time-chat-app
+# Real-Time Chat Application
 
+## Overview
 
+This document provides an overview of the interface between the frontend and backend of the Real-Time Chat Application. It describes the various endpoints, updated functionality, and integration details of the application.
 
-## Getting started
+## Table of Contents
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+1. [API Gateway Endpoints](#api-gateway-endpoints)
+2. [User Service Endpoints](#user-service-endpoints)
+3. [Chat Service Endpoints](#chat-service-endpoints)
+4. [Message Service Endpoints](#message-service-endpoints)
+5. [Auth Service Endpoints](#auth-service-endpoints)
+6. [Frontend Integration](#frontend-integration)
+7. [Environment Variables](#environment-variables)
+8. [Kubernetes Ingress Configuration](#kubernetes-ingress-configuration)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## API Gateway Endpoints
 
-## Add your files
+The API Gateway routes incoming API requests from the frontend to the appropriate service endpoints.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Auth Routes
 
-```
-cd existing_repo
-git remote add origin https://gitlab.au.dk/swwao_grp-6/real-time-chat-app.git
-git branch -M main
-git push -uf origin main
-```
+- **Login**
+  - **Endpoint**: `/api/auth/login`
+  - **Method**: `POST`
+  - **Description**: Authenticates a user.
+  - **Request Body**:
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "password"
+    }
+    ```
 
-## Integrate with your tools
+- **Register**
+  - **Endpoint**: `/api/auth/register`
+  - **Method**: `POST`
+  - **Description**: Registers a new user.
+  - **Request Body**:
+    ```json
+    {
+      "email": "user@example.com",
+      "username": "username",
+      "password": "password"
+    }
+    ```
 
-- [ ] [Set up project integrations](https://gitlab.au.dk/swwao_grp-6/real-time-chat-app/-/settings/integrations)
+- **Forgot Password**
+  - **Endpoint**: `/api/auth/forgot-password`
+  - **Method**: `POST`
+  - **Description**: Initiates the password reset process.
+  - **Request Body**:
+    ```json
+    {
+      "email": "user@example.com"
+    }
+    ```
 
-## Collaborate with your team
+- **Reset Password**
+  - **Endpoint**: `/api/auth/reset-password/:token`
+  - **Method**: `POST`
+  - **Description**: Resets the user's password using the provided token.
+  - **Request Body**:
+    ```json
+    {
+      "password": "newpassword"
+    }
+    ```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### User Routes
 
-## Test and Deploy
+- **Get Users**
+  - **Endpoint**: `/api/users`
+  - **Method**: `GET`
+  - **Description**: Retrieves a list of users.
 
-Use the built-in continuous integration in GitLab.
+- **Get User**
+  - **Endpoint**: `/api/users/:userId`
+  - **Method**: `GET`
+  - **Description**: Retrieves a user by ID.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- **Update User**
+  - **Endpoint**: `/api/users/:userId`
+  - **Method**: `PUT`
+  - **Description**: Updates an existing user.
+  - **Request Body**:
+    ```json
+    {
+      "email": "new-email@example.com",
+      "username": "new-username"
+    }
+    ```
 
-***
+### Chat Routes
 
-# Editing this README
+- **Create Chat Room**
+  - **Endpoint**: `/api/chats`
+  - **Method**: `POST`
+  - **Description**: Creates a new chat room.
+  - **Request Body**:
+    ```json
+    {
+      "name": "Chat Room Name"
+    }
+    ```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Get Chat Rooms**
+  - **Endpoint**: `/api/chats`
+  - **Method**: `GET`
+  - **Description**: Retrieves a list of chat rooms.
 
-## Suggestions for a good README
+- **Get Chat Room**
+  - **Endpoint**: `/api/chats/:chatId`
+  - **Method**: `GET`
+  - **Description**: Retrieves a chat room by ID.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **Update Chat Room**
+  - **Endpoint**: `/api/chats/:chatId`
+  - **Method**: `PUT`
+  - **Description**: Updates an existing chat room.
+  - **Request Body**:
+    ```json
+    {
+      "name": "New Chat Room Name"
+    }
+    ```
 
-## Name
-Choose a self-explaining name for your project.
+- **Delete Chat Room**
+  - **Endpoint**: `/api/chats/:chatId`
+  - **Method**: `DELETE`
+  - **Description**: Deletes a chat room by ID.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- **Invite Users to Chat Room**
+  - **Endpoint**: `/api/chats/:chatId/invite`
+  - **Method**: `POST`
+  - **Description**: Invites users to a chat room.
+  - **Request Body**:
+    ```json
+    {
+      "users": ["user-id-1", "user-id-2"]
+    }
+    ```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Message Routes
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **Create Message**
+  - **Endpoint**: `/api/messages`
+  - **Method**: `POST`
+  - **Description**: Creates a new message.
+  - **Request Body**:
+    ```json
+    {
+      "content": "Message content",
+      "senderId": "user-id",
+      "chatRoomId": "chat-room-id"
+    }
+    ```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- **Get Messages by Chat Room ID**
+  - **Endpoint**: `/api/messages/:chatId`
+  - **Method**: `GET`
+  - **Description**: Retrieves messages by chat room ID.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Profile Routes
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- **Get Profile**
+  - **Endpoint**: `/api/profile`
+  - **Method**: `GET`
+  - **Description**: Retrieves the profile of the authenticated user.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- **Update Profile**
+  - **Endpoint**: `/api/profile`
+  - **Method**: `PUT`
+  - **Description**: Updates the profile of the authenticated user.
+  - **Request Body**:
+    ```json
+    {
+      "email": "new-email@example.com",
+      "username": "new-username"
+    }
+    ```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+### Settings Routes
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- **Get Settings**
+  - **Endpoint**: `/api/settings`
+  - **Method**: `GET`
+  - **Description**: Retrieves the settings of the authenticated user.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- **Update Settings**
+  - **Endpoint**: `/api/settings`
+  - **Method**: `PUT`
+  - **Description**: Updates the settings of the authenticated user.
+  - **Request Body**:
+    ```json
+    {
+      "notifications": true,
+      "privacy": "private",
+      "theme": "dark"
+    }
+    ```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## Frontend Integration
 
-## License
-For open source projects, say how it is licensed.
+The frontend interacts with the backend through the API Gateway endpoints described above. The frontend is built using React and provides the following pages and functionality:
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+1. **Login Page**: Allows users to log in to the application.
+2. **Registration Page**: Allows users to register a new account.
+3. **Dashboard**: Displays a list of chat rooms the user is a part of and allows creating new chat rooms.
+4. **Chat Room Page**: Displays the messages in a chat room and allows sending new messages.
+5. **User Settings Page**: Allows users to view and update their settings.
+6. **User Profile Page**: Displays user profile information and allows updating it.
+
+The `Ingress` configuration routes HTTP requests to the appropriate backend services based on the URL path. This setup allows the frontend to make API requests to a single host (`swwao.courses.orbit.au.dk`) with different path prefixes (`/grp-6/auth`, `/grp-6/user`, `/grp-6/chat`, `/grp-6/message`, `/grp-6/frontend`, `/grp-6/graphql`), which are then directed to the corresponding services.
+
+## Environment Variables
+
+The application uses Kubernetes ConfigMaps and Secrets to manage environment variables. Below are the environment variables used:
+
+### ConfigMap
+
+- `GRAPHQL_URL`: The URL of the GraphQL server.
+- `RABBITMQ_HOST`: The hostname of the RabbitMQ server.
+- `RABBITMQ_PORT`: The port of the RabbitMQ server.
+- `FRONTEND_URL`: The URL of the frontend application.
+
+### Secrets
+
+- `JWT_SECRET`: The secret key used for JWT authentication.
+- `RABBITMQ_DEFAULT_USER`: The default RabbitMQ username (base64 encoded).
+- `RABBITMQ_DEFAULT_PASS`: The default RabbitMQ password (base64 encoded).
+- `EMAIL_USER`: The email user for sending emails (base64 encoded).
+- `EMAIL_PASS`: The email password for sending emails (base64 encoded).
+
+### Deployment Example
+
+Here's an example of a Kubernetes deployment for a service using environment variables from ConfigMap and Secrets:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-service
+  namespace: real-time-chat-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-service
+  template:
+    metadata:
+      labels:
+        app: example-service
+    spec:
+      containers:
+      - name: example-service
+        image: example-service:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: real-time-chat-config
+        env:
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: JWT_SECRET
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: RABBITMQ_DEFAULT_PASS
+        - name: RABBITMQ_URL
+          value: "amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@$(RABBITMQ_HOST):$(RABBITMQ_PORT)"
+        - name: GRAPHQL_URL
+          valueFrom:
+            configMapKeyRef:
+              name: real-time-chat-config
+              key: GRAPHQL_URL
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: real-time-chat-config
+              key: FRONTEND_URL
+        - name: EMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: EMAIL_USER
+        - name: EMAIL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: real-time-chat-secrets
+              key: EMAIL_PASS
