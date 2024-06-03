@@ -1,9 +1,10 @@
-const { GraphQLClient, gql } = require('graphql-request');
+(async () => {
+    const { GraphQLClient, gql } = await import('graphql-request');
 
-const client = new GraphQLClient(process.env.GRAPHQL_URL);
+    const client = new GraphQLClient(process.env.GRAPHQL_URL);
 
-exports.createChatRoom = async (chatRoomData) => {
-    const mutation = gql`
+    exports.createChatRoom = async (chatRoomData) => {
+        const mutation = gql`
         mutation($input: CreateChatRoomInput!) {
             createChatRoom(input: $input) {
                 id
@@ -16,13 +17,13 @@ exports.createChatRoom = async (chatRoomData) => {
             }
         }
     `;
-    const variables = { input: chatRoomData };
-    const data = await client.request(mutation, variables);
-    return data.createChatRoom;
-};
+        const variables = { input: chatRoomData };
+        const data = await client.request(mutation, variables);
+        return data.createChatRoom;
+    };
 
-exports.getChatRoom = async (id) => {
-    const query = gql`
+    exports.getChatRoom = async (id) => {
+        const query = gql`
         query($id: ID!) {
             chatRoom(id: $id) {
                 id
@@ -35,13 +36,13 @@ exports.getChatRoom = async (id) => {
             }
         }
     `;
-    const variables = { id };
-    const data = await client.request(query, variables);
-    return data.chatRoom;
-};
+        const variables = { id };
+        const data = await client.request(query, variables);
+        return data.chatRoom;
+    };
 
-exports.updateChatRoom = async (id, chatRoomData) => {
-    const mutation = gql`
+    exports.updateChatRoom = async (id, chatRoomData) => {
+        const mutation = gql`
         mutation($id: ID!, $input: UpdateChatRoomInput!) {
             updateChatRoom(id: $id, input: $input) {
                 id
@@ -54,25 +55,25 @@ exports.updateChatRoom = async (id, chatRoomData) => {
             }
         }
     `;
-    const variables = { id, input: chatRoomData };
-    const data = await client.request(mutation, variables);
-    return data.updateChatRoom;
-};
+        const variables = { id, input: chatRoomData };
+        const data = await client.request(mutation, variables);
+        return data.updateChatRoom;
+    };
 
-exports.deleteChatRoom = async (id) => {
-    const mutation = gql`
+    exports.deleteChatRoom = async (id) => {
+        const mutation = gql`
         mutation($id: ID!) {
             deleteChatRoom(id: $id) {
                 id
             }
         }
     `;
-    const variables = { id };
-    await client.request(mutation, variables);
-};
+        const variables = { id };
+        await client.request(mutation, variables);
+    };
 
-exports.inviteUsers = async (id, users) => {
-    const mutation = gql`
+    exports.inviteUsers = async (id, users) => {
+        const mutation = gql`
         mutation($id: ID!, $users: [ID!]!) {
             inviteUsersToChatRoom(id: $id, users: $users) {
                 id
@@ -85,7 +86,8 @@ exports.inviteUsers = async (id, users) => {
             }
         }
     `;
-    const variables = { id, users };
-    const data = await client.request(mutation, variables);
-    return data.inviteUsersToChatRoom;
-};
+        const variables = { id, users };
+        const data = await client.request(mutation, variables);
+        return data.inviteUsersToChatRoom;
+    };
+})();

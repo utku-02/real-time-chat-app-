@@ -1,9 +1,10 @@
-const { GraphQLClient, gql } = require('graphql-request');
+(async () => {
+    const { GraphQLClient, gql } = await import('graphql-request');
 
-const client = new GraphQLClient(process.env.GRAPHQL_URL);
+    const client = new GraphQLClient(process.env.GRAPHQL_URL);
 
-exports.createMessage = async (messageData) => {
-    const mutation = gql`
+    exports.createMessage = async (messageData) => {
+        const mutation = gql`
         mutation($input: CreateMessageInput!) {
             createMessage(input: $input) {
                 id
@@ -19,13 +20,13 @@ exports.createMessage = async (messageData) => {
             }
         }
     `;
-    const variables = { input: messageData };
-    const data = await client.request(mutation, variables);
-    return data.createMessage;
-};
+        const variables = { input: messageData };
+        const data = await client.request(mutation, variables);
+        return data.createMessage;
+    };
 
-exports.getMessage = async (id) => {
-    const query = gql`
+    exports.getMessage = async (id) => {
+        const query = gql`
         query($id: ID!) {
             message(id: $id) {
                 id
@@ -41,13 +42,13 @@ exports.getMessage = async (id) => {
             }
         }
     `;
-    const variables = { id };
-    const data = await client.request(query, variables);
-    return data.message;
-};
+        const variables = { id };
+        const data = await client.request(query, variables);
+        return data.message;
+    };
 
-exports.getMessagesByChatId = async (chatId) => {
-    const query = gql`
+    exports.getMessagesByChatId = async (chatId) => {
+        const query = gql`
         query($chatId: ID!) {
             messagesByChatId(chatId: $chatId) {
                 id
@@ -63,7 +64,8 @@ exports.getMessagesByChatId = async (chatId) => {
             }
         }
     `;
-    const variables = { chatId };
-    const data = await client.request(query, variables);
-    return data.messagesByChatId;
-};
+        const variables = { chatId };
+        const data = await client.request(query, variables);
+        return data.messagesByChatId;
+    };
+})();
