@@ -55,7 +55,7 @@ spec:
                 name: graphql
                 port:
                   number: 4000
-          - path: /grp-6/api-docs(/|$)(.*)
+          - path: /grp-6/api-gateway(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:

@@ -16,7 +16,7 @@ const options = {
             },
         ],
     },
-    apis: ['./src/routes/apiGatewayRoutes.js'],
+    apis: ['./src/routes/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
