@@ -5,6 +5,13 @@ const typeDefs = gql`
     id: ID!
     email: String!
     username: String!
+    settings: UserSettings
+  }
+
+  type UserSettings {
+    notifications: Boolean
+    privacy: String
+    theme: String
   }
 
   type ChatRoom {
@@ -22,8 +29,10 @@ const typeDefs = gql`
 
   type Query {
     user(id: ID!): User
+    userSettings(id: ID!): UserSettings
     chatRoom(id: ID!): ChatRoom
     message(id: ID!): Message
+    messagesByChatId(chatId: ID!): [Message!]
   }
 
   input CreateUserInput {
@@ -37,8 +46,18 @@ const typeDefs = gql`
     username: String
   }
 
+  input UpdateUserSettingsInput {
+    notifications: Boolean
+    privacy: String
+    theme: String
+  }
+
   input CreateChatRoomInput {
     name: String!
+  }
+
+  input UpdateChatRoomInput {
+    name: String
   }
 
   input CreateMessageInput {
@@ -50,7 +69,11 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): User
     updateUser(id: ID!, input: UpdateUserInput!): User
+    updateUserSettings(id: ID!, settings: UpdateUserSettingsInput!): UserSettings
     createChatRoom(input: CreateChatRoomInput!): ChatRoom
+    updateChatRoom(id: ID!, input: UpdateChatRoomInput!): ChatRoom
+    deleteChatRoom(id: ID!): Boolean
+    inviteUsersToChatRoom(id: ID!, users: [ID!]!): ChatRoom
     createMessage(input: CreateMessageInput!): Message
   }
 `;
