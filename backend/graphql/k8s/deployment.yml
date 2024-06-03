@@ -21,22 +21,8 @@ spec:
         envFrom:
         - configMapRef:
             name: real-time-chat-config
-        env:
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: real-time-chat-secrets
-              key: JWT_SECRET
-        - name: RABBITMQ_DEFAULT_USER
-          valueFrom:
-            secretKeyRef:
-              name: real-time-chat-secrets
-              key: RABBITMQ_DEFAULT_USER
-        - name: RABBITMQ_DEFAULT_PASS
-          valueFrom:
-            secretKeyRef:
-              name: real-time-chat-secrets
-              key: RABBITMQ_DEFAULT_PASS
+        - secretRef:
+            name: real-time-chat-secrets
         resources:
           requests:
             memory: "64Mi"

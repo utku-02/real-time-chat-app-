@@ -9,6 +9,7 @@
   "dependencies": {
     "apollo-server": "^3.13.0",
     "graphql": "^16.8.1",
-    "graphql-request": "^7.0.1"
+    "graphql-request": "^7.0.1",
+    "mongoose": "^8.4.1"
   }
 }

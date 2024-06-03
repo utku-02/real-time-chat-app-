@@ -8,3 +8,4 @@ data:
   RABBITMQ_HOST: "rabbit-mq"
   RABBITMQ_PORT: "5672"
   FRONTEND_URL: "http://your_frontend_url"
+  MONGO_URL: "mongodb://mongo:27017/real-time-chat-app"
