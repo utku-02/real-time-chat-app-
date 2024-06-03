@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 app.post('/users', userController.createUser);
 app.put('/users/:id', userController.updateUser);
 app.get('/users/:id', userController.getUser);
+app.get('/users', userController.getUsers);
 app.get('/users/:id/settings', userController.getUserSettings);
 app.put('/users/:id/settings', userController.updateUserSettings);
 
