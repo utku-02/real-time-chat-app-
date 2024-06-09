@@ -1,104 +1,109 @@
-(async () => {
-    const { GraphQLClient, gql } = await import('graphql-request');
+const { GraphQLClient, gql } = require('graphql-request');
+const { Headers } = require('cross-fetch');
 
-    const client = new GraphQLClient(process.env.GRAPHQL_URL);
+global.Headers = global.Headers || Headers;
 
-    exports.createUser = async (userData) => {
-        const mutation = gql`
-        mutation($input: CreateUserInput!) {
-            createUser(input: $input) {
-                id
-                email
-                username
-            }
-        }
-    `;
-        const variables = { input: userData };
-        const data = await client.request(mutation, variables);
-        return data.createUser;
-    };
+const client = new GraphQLClient(process.env.GRAPHQL_URL, {
+  Headers: {
+    Authorization: `Bearer ${process.env.JWT_TOKEN}`,
+  },
+});
 
-    exports.updateUser = async (id, userData) => {
-        const mutation = gql`
-        mutation($id: ID!, $input: UpdateUserInput!) {
-            updateUser(id: $id, input: $input) {
-                id
-                email
-                username
-            }
-        }
-    `;
-        const variables = { id, input: userData };
-        const data = await client.request(mutation, variables);
-        return data.updateUser;
-    };
+exports.createUser = async (userData) => {
+  const mutation = gql`
+    mutation($input: CreateUserInput) {
+      createUser(input: $input) {
+        id
+        email
+        username
+      }
+    }
+  `;
+  const variables = { input: userData };
+  const data = await client.request(mutation, variables);
+  return data.createUser;
+};
 
-    exports.getUser = async (id) => {
-        const query = gql`
-        query($id: ID!) {
-            user(id: $id) {
-                id
-                email
-                username
-            }
-        }
-    `;
-        const variables = { id };
-        const data = await client.request(query, variables);
-        return data.user;
-    };
+exports.updateUser = async (id, userData) => {
+  const mutation = gql`
+    mutation($id: ID!, $input: UpdateUserInput!) {
+      updateUser(id: $id, input: $input) {
+        id
+        email
+        username
+      }
+    }
+  `;
+  const variables = { id, input: userData };
+  const data = await client.request(mutation, variables);
+  return data.updateUser;
+};
 
-    exports.getUsers = async () => {
-        const query = gql`
-            query {
-                users {
-                    id
-                    email
-                    username
-                }
-            }
-        `;
-        const data = await client.request(query);
-        return data.users;
-    };
+exports.getUser = async (id) => {
+  const query = gql`
+    query($id: ID!) {
+      user(id: $id) {
+        id
+        email
+        username
+      }
+    }
+  `;
+  const variables = { id };
+  const data = await client.request(query, variables);
+  return data.user;
+};
 
-    exports.getUserSettings = async (id) => {
-        const query = gql`
-        query($id: ID!) {
-            userSettings(id: $id) {
-                notifications
-                privacy
-                theme
-            }
-        }
-    `;
-        const variables = { id };
-        const data = await client.request(query, variables);
-        return data.userSettings;
-    };
+exports.getUsers = async () => {
+  const query = gql`
+    query {
+      users {
+        id
+        email
+        username
+      }
+    }
+  `;
+  const data = await client.request(query);
+  return data.users;
+};
 
-    exports.updateUserSettings = async (id, settings) => {
-        const mutation = gql`
-        mutation($id: ID!, $settings: UpdateUserSettingsInput!) {
-            updateUserSettings(id: $id, settings: $settings) {
-                notifications
-                privacy
-                theme
-            }
-        }
-    `;
-        const variables = { id, settings };
-        const data = await client.request(mutation, variables);
-        return data.updateUserSettings;
-    };
+exports.getUserSettings = async (id) => {
+  const query = gql`
+    query($id: ID!) {
+      userSettings(id: $id) {
+        notifications
+        privacy
+        theme
+      }
+    }
+  `;
+  const variables = { id };
+  const data = await client.request(query, variables);
+  return data.userSettings;
+};
 
-    exports.healthCheck = async () => {
-        const query = gql`
-        query {
-            healthCheck
-        }
-    `;
-        const data = await client.request(query);
-        return data.healthCheck;
-    };
-})();
+exports.updateUserSettings = async (id, settings) => {
+  const mutation = gql`
+    mutation($id: ID!, $settings: UpdateUserSettingsInput!) {
+      updateUserSettings(id: $id, settings: $settings) {
+        notifications
+        privacy
+        theme
+      }
+    }
+  `;
+  const variables = { id, settings };
+  const data = await client.request(mutation, variables);
+  return data.updateUserSettings;
+};
+
+exports.healthCheck = async () => {
+  const query = gql`
+    query {
+      healthCheck
+    }
+  `;
+  const data = await client.request(query);
+  return data.healthCheck;
+};

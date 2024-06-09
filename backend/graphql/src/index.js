@@ -7,6 +7,7 @@ const { getResolvers } = require('./graphql/resolvers');
 
 const app = express();
 const port = process.env.PORT || 4000;
+const healthCheckPort = 4001;
 
 app.use(bodyParser.json());
 
@@ -36,14 +37,15 @@ app.get('/healthz', (req, res) => {
 app.get('/readiness', (req, res) => {
   const dbState = mongoose.connection.readyState;
   if (dbState !== 1) { // 1 means connected
-    return res.status(503).send('Database not ready');
+      console.error('Database not ready:', dbState);
+      return res.status(503).send('Database not ready');
   }
-
   res.status(200).send('OK');
 });
 
-app.listen(port, () => {
-  console.log(`Health check service running on port ${port}`);
+
+app.listen(healthCheckPort, () => {
+  console.log(`Health check service running on port ${healthCheckPort}`);
 });
 
 initializeServer();
