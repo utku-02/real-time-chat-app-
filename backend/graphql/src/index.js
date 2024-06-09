@@ -13,22 +13,21 @@ app.use(bodyParser.json());
 
 const initializeServer = async () => {
   const resolvers = await getResolvers();
-
   const server = new ApolloServer({ typeDefs, resolvers });
-
   const mongoURL = process.env.MONGO_URL || 'mongodb://mongo:27017/real-time-chat-app';
-  mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log('Connected to MongoDB');
-      server.listen({ port }).then(({ url }) => {
-        console.log(`GraphQL service running at ${url}`);
+  mongoose.connect(mongoURL)
+      .then(() => {
+          console.log('Connected to MongoDB');
+          server.listen({ port }).then(({ url }) => {
+              console.log(`GraphQL service running at ${url}`);
+          });
+      })
+      .catch(err => {
+          console.error('Error connecting to MongoDB:', err.message);
+          process.exit(1);
       });
-    })
-    .catch(err => {
-      console.error('Error connecting to MongoDB:', err.message);
-      process.exit(1);
-    });
 };
+
 
 app.get('/healthz', (req, res) => {
   res.status(200).send('OK');

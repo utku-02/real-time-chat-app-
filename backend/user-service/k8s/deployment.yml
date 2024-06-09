@@ -16,6 +16,7 @@ spec:
       containers:
       - name: user-service
         image: grejs420/user-service:main
+        imagePullPolicy: Always 
         ports:
         - containerPort: 3001
         envFrom:

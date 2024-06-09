@@ -16,6 +16,7 @@ spec:
       containers:
       - name: graphql
         image: grejs420/graphql:main
+        imagePullPolicy: Always  # Ensure the latest image is pulled
         ports:
         - containerPort: 4000
         - containerPort: 4001  # Added port for health check service

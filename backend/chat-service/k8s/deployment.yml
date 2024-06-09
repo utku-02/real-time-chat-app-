@@ -16,6 +16,7 @@ spec:
       containers:
       - name: chat-service
         image: grejs420/chat-service:main
+        imagePullPolicy: Always 
         ports:
         - containerPort: 3002
         envFrom:

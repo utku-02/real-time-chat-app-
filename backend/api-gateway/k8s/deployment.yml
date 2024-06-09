@@ -16,6 +16,7 @@ spec:
       containers:
       - name: api-gateway
         image: grejs420/api-gateway:main
+        imagePullPolicy: Always 
         ports:
         - containerPort: 3000
         envFrom:
