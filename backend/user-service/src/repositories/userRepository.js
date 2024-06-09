@@ -48,6 +48,20 @@
         return data.user;
     };
 
+    exports.getUsers = async () => {
+        const query = gql`
+            query {
+                users {
+                    id
+                    email
+                    username
+                }
+            }
+        `;
+        const data = await client.request(query);
+        return data.users;
+    };
+
     exports.getUserSettings = async (id) => {
         const query = gql`
         query($id: ID!) {

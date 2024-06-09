@@ -1,6 +1,15 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+  type Query {
+    healthCheck: String
+    user(id: ID!): User
+    userSettings(id: ID!): UserSettings
+    chatRoom(id: ID!): ChatRoom
+    message(id: ID!): Message
+    messagesByChatId(chatId: ID!): [Message!]
+  }
+
   type User {
     id: ID!
     email: String!
@@ -25,14 +34,6 @@ const typeDefs = gql`
     content: String!
     sender: User!
     chatRoom: ChatRoom!
-  }
-
-  type Query {
-    user(id: ID!): User
-    userSettings(id: ID!): UserSettings
-    chatRoom(id: ID!): ChatRoom
-    message(id: ID!): Message
-    messagesByChatId(chatId: ID!): [Message!]
   }
 
   input CreateUserInput {

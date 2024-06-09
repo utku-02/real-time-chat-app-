@@ -4,6 +4,7 @@ const Message = require('../models/Message');
 
 const resolvers = {
   Query: {
+    healthCheck: () => 'OK',
     user: async (_, { id }) => {
       return await User.findById(id);
     },

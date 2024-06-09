@@ -1,91 +1,36 @@
-const { GraphQLClient, gql } = require('graphql-request');
-const client = new GraphQLClient(process.env.GRAPHQL_URL);
+const userRepository = require('../repositories/userRepository');
+const producer = require('../utils/producer');
 
 exports.createUser = async (userData) => {
-    const mutation = gql`
-        mutation($input: CreateUserInput!) {
-            createUser(input: $input) {
-                id
-                email
-                username
-            }
-        }
-    `;
-    const variables = { input: userData };
-    const data = await client.request(mutation, variables);
-    return data.createUser;
+    const user = await userRepository.createUser(userData);
+    await producer.sendMessage('user.registered', user);
+    return user;
 };
 
 exports.updateUser = async (id, userData) => {
-    const mutation = gql`
-        mutation($id: ID!, $input: UpdateUserInput!) {
-            updateUser(id: $id, input: $input) {
-                id
-                email
-                username
-            }
-        }
-    `;
-    const variables = { id, input: userData };
-    const data = await client.request(mutation, variables);
-    return data.updateUser;
+    const user = await userRepository.updateUser(id, userData);
+    await producer.sendMessage('user.updated', user);
+    return user;
 };
 
 exports.getUser = async (id) => {
-    const query = gql`
-        query($id: ID!) {
-            user(id: $id) {
-                id
-                email
-                username
-            }
-        }
-    `;
-    const variables = { id };
-    const data = await client.request(query, variables);
-    return data.user;
+    return await userRepository.getUser(id);
 };
 
 exports.getUsers = async () => {
-    const query = gql`
-        query {
-            users {
-                id
-                email
-                username
-            }
-        }
-    `;
-    const data = await client.request(query);
-    return data.users;
+    return await userRepository.getUsers();
 };
 
 exports.getUserSettings = async (id) => {
-    const query = gql`
-        query($id: ID!) {
-            userSettings(id: $id) {
-                notifications
-                privacy
-                theme
-            }
-        }
-    `;
-    const variables = { id };
-    const data = await client.request(query, variables);
-    return data.userSettings;
+    return await userRepository.getUserSettings(id);
 };
 
 exports.updateUserSettings = async (id, settings) => {
-    const mutation = gql`
-        mutation($id: ID!, $settings: UpdateUserSettingsInput!) {
-            updateUserSettings(id: $id, settings: $settings) {
-                notifications
-                privacy
-                theme
-            }
-        }
-    `;
-    const variables = { id, settings };
-    const data = await client.request(mutation, variables);
-    return data.updateUserSettings;
+    const updatedSettings = await userRepository.updateUserSettings(id, settings);
+    await producer.sendMessage('user.settings.updated', { id, settings: updatedSettings });
+    return updatedSettings;
+};
+
+exports.handleUserUpdate = async (user) => {
+    console.log('User updated:', user);
 };
