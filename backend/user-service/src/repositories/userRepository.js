@@ -91,4 +91,14 @@
         const data = await client.request(mutation, variables);
         return data.updateUserSettings;
     };
+
+    exports.healthCheck = async () => {
+        const query = gql`
+        query {
+            healthCheck
+        }
+    `;
+        const data = await client.request(query);
+        return data.healthCheck;
+    };
 })();

@@ -53,3 +53,27 @@ exports.updateUserSettings = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getHealthz = async (req, res) => {
+    res.status(200).send('OK');
+};
+
+exports.getReadiness = async (req, res) => {
+    try {
+        await userService.healthCheck();
+    } catch (err) {
+        return res.status(503).send('GraphQL service not ready');
+    }
+  
+    try {
+        const connection = await amqp.connect(process.env.RABBITMQ_URL);
+        await connection.close();
+    } catch (err) {
+        return res.status(503).send('RabbitMQ not ready');
+    }
+  
+    res.status(200).send('OK');
+  };
+
+
+

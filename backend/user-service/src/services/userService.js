@@ -34,3 +34,7 @@ exports.updateUserSettings = async (id, settings) => {
 exports.handleUserUpdate = async (user) => {
     console.log('User updated:', user);
 };
+
+exports.healthCheck = async () => {
+    return await userRepository.healthCheck();
+};
