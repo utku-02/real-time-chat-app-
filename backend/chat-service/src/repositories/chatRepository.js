@@ -1,7 +1,14 @@
 (async () => {
     const { GraphQLClient, gql } = await import('graphql-request');
-
-    const client = new GraphQLClient(process.env.GRAPHQL_URL);
+    const { Headers } = await import('cross-fetch');
+  
+    global.Headers = global.Headers || Headers;
+  
+    const client = new GraphQLClient(process.env.GRAPHQL_URL, {
+      headers: {
+        Authorization: `Bearer ${process.env.JWT_TOKEN}`,
+      },
+    });
 
     exports.createChatRoom = async (chatRoomData) => {
         const mutation = gql`
