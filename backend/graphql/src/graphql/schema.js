@@ -3,6 +3,7 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
   type Query {
     healthCheck: String
+    users: [User]
     user(id: ID!): User
     userSettings(id: ID!): UserSettings
     chatRoom(id: ID!): ChatRoom

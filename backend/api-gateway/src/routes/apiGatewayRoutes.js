@@ -131,7 +131,7 @@ router.post('/auth/reset-password/:token', authServiceProxy.resetPassword);
  *       200:
  *         description: List of users
  */
-router.get('/users', authMiddleware.verifyToken, userServiceProxy.getUsers);
+router.get('/users', userServiceProxy.getUsers);
 
 /**
  * @swagger
