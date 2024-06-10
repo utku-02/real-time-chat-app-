@@ -1,4 +1,8 @@
 const chatService = require('../services/chatService');
+const amqp = require('amqplib');
+const fetch = require('cross-fetch');
+
+global.fetch = global.fetch || fetch;
 
 exports.createChatRoom = async (req, res) => {
     try {
