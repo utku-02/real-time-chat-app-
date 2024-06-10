@@ -31,3 +31,7 @@ exports.inviteUsers = async (id, users) => {
 exports.handleUserUpdated = async (user) => {
     console.log('User updated:', user);
 };
+
+exports.healthCheck = async () => {
+  return await chatRepository.healthCheck();
+};

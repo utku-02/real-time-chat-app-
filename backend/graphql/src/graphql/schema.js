@@ -7,13 +7,13 @@ const typeDefs = gql`
     userSettings(id: ID!): UserSettings
     chatRoom(id: ID!): ChatRoom
     message(id: ID!): Message
-    messagesByChatId(chatId: ID!): [Message!]
+    messagesByChatId(chatId: ID!): [Message]
   }
 
   type User {
     id: ID!
-    email: String!
-    username: String!
+    email: String
+    username: String
     settings: UserSettings
   }
 
@@ -25,21 +25,21 @@ const typeDefs = gql`
 
   type ChatRoom {
     id: ID!
-    name: String!
-    members: [User!]!
+    name: String
+    members: [User]
   }
 
   type Message {
     id: ID!
-    content: String!
-    sender: User!
-    chatRoom: ChatRoom!
+    content: String
+    sender: User
+    chatRoom: ChatRoom
   }
 
   input CreateUserInput {
-    email: String!
-    username: String!
-    password: String!
+    email: String
+    username: String
+    password: String
   }
 
   input UpdateUserInput {
@@ -54,7 +54,7 @@ const typeDefs = gql`
   }
 
   input CreateChatRoomInput {
-    name: String!
+    name: String
   }
 
   input UpdateChatRoomInput {
@@ -62,20 +62,20 @@ const typeDefs = gql`
   }
 
   input CreateMessageInput {
-    content: String!
-    senderId: ID!
-    chatRoomId: ID!
+    content: String
+    senderId: ID
+    chatRoomId: ID
   }
 
   type Mutation {
-    createUser(input: CreateUserInput!): User
-    updateUser(id: ID!, input: UpdateUserInput!): User
-    updateUserSettings(id: ID!, settings: UpdateUserSettingsInput!): UserSettings
-    createChatRoom(input: CreateChatRoomInput!): ChatRoom
-    updateChatRoom(id: ID!, input: UpdateChatRoomInput!): ChatRoom
+    createUser(input: CreateUserInput): User
+    updateUser(id: ID!, input: UpdateUserInput): User
+    updateUserSettings(id: ID!, settings: UpdateUserSettingsInput): UserSettings
+    createChatRoom(input: CreateChatRoomInput): ChatRoom
+    updateChatRoom(id: ID!, input: UpdateChatRoomInput): ChatRoom
     deleteChatRoom(id: ID!): Boolean
-    inviteUsersToChatRoom(id: ID!, users: [ID!]!): ChatRoom
-    createMessage(input: CreateMessageInput!): Message
+    inviteUsersToChatRoom(id: ID!, users: [ID!]): ChatRoom
+    createMessage(input: CreateMessageInput): Message
   }
 `;
 

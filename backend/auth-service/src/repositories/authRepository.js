@@ -45,4 +45,14 @@
         const variables = { id, password };
         await client.request(mutation, variables);
     };
+  
+    exports.healthCheck = async () => {
+      const query = gql`
+        query {
+          healthCheck
+        }
+      `;
+      const data = await client.request(query);
+      return data.healthCheck;
+    };
 })();

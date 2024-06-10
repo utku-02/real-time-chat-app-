@@ -18,3 +18,7 @@ exports.getMessagesByChatId = async (chatId) => {
 exports.handleChatRoomJoined = async (chatRoom) => {
     console.log('Chat room joined:', chatRoom);
 };
+
+exports.healthCheck = async () => {
+  return await messageRepository.healthCheck();
+};

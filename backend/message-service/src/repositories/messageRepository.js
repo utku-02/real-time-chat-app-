@@ -68,4 +68,14 @@
         const data = await client.request(query, variables);
         return data.messagesByChatId;
     };
+  
+    exports.healthCheck = async () => {
+      const query = gql`
+        query {
+          healthCheck
+        }
+      `;
+      const data = await client.request(query);
+      return data.healthCheck;
+    };
 })();

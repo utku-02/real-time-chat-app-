@@ -1,11 +1,13 @@
-require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const userController = require('./controllers/userController');
 const consumer = require('./utils/consumer');
+const fetch = require('cross-fetch');
+
+global.fetch = global.fetch || fetch;
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 app.use(bodyParser.json());
 app.post('/users', userController.createUser);
@@ -18,6 +20,6 @@ app.get('/healthz', userController.getHealthz);
 app.get('/readiness', userController.getReadiness);
 
 app.listen(port, () => {
-  console.log(`User service running on port ${port}`);
-  consumer.consumeMessages();
+    console.log(`User service running on port ${port}`);
+    consumer.consumeMessages();
 });

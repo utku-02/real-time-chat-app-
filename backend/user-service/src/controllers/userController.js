@@ -1,5 +1,8 @@
 const userService = require('../services/userService');
 const amqp = require('amqplib');
+const fetch = require('cross-fetch');
+
+global.fetch = global.fetch || fetch;
 
 exports.createUser = async (req, res) => {
     try {
@@ -79,4 +82,3 @@ exports.getReadiness = async (req, res) => {
     }
     res.status(200).send('OK');
 };
-

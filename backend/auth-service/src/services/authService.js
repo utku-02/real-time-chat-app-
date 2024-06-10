@@ -40,3 +40,7 @@ exports.resetPassword = async (token, newPassword) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await authRepository.updateUserPassword(decoded.id, hashedPassword);
 };
+
+exports.healthCheck = async () => {
+  return await authRepository.healthCheck();
+};
