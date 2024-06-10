@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const userController = require('./controllers/userController');
 const consumer = require('./utils/consumer');
 const fetch = require('cross-fetch');
@@ -10,6 +11,7 @@ const app = express();
 const port = 3001;
 
 app.use(bodyParser.json());
+app.use(cors());
 app.post('/users', userController.createUser);
 app.put('/users/:id', userController.updateUser);
 app.get('/users/:id', userController.getUser);

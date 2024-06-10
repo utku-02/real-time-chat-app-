@@ -5,12 +5,14 @@ const mongoose = require('mongoose');
 const typeDefs = require('./graphql/schema');
 const { getResolvers } = require('./graphql/resolvers');
 const seedDatabase = require('./services/seedDatabase'); 
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 4000;
 const healthCheckPort = 4001;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const initializeServer = async () => {
   const resolvers = await getResolvers();

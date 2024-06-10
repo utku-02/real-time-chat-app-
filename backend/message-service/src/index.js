@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const messageController = require('./controllers/messageController');
 const consumer = require('./utils/consumer');
 const fetch = require('cross-fetch');
+const cors = require('cors');
 
 global.fetch = global.fetch || fetch;
 
@@ -10,6 +11,7 @@ const app = express();
 const port = 3003;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.post('/messages', messageController.createMessage);
 app.get('/messages/:id', messageController.getMessage);
