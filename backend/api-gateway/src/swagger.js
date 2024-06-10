@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://swwao.courses.orbit.au.dk/grp-6',
+                url: 'https://swwao.courses.orbit.au.dk/grp-6/api-gateway/api',
                 description: 'API Gateway',
             },
         ],
