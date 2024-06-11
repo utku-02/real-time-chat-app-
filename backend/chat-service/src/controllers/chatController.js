@@ -13,6 +13,15 @@ exports.createChatRoom = async (req, res) => {
     }
 };
 
+exports.getChatRooms = async (req, res) => {
+    try {
+        const chatRooms = await chatService.getChatRooms();
+        res.status(200).json(chatRooms);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.getChatRoom = async (req, res) => {
     try {
         const chatRoom = await chatService.getChatRoom(req.params.id);

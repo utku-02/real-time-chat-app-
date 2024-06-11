@@ -38,6 +38,14 @@ const resolvers = {
         throw new Error('Error fetching user settings');
       }
     },
+    chatRooms: async () => {
+      try {
+        return await ChatRoom.find({}).populate('members');
+      } catch (err) {
+        console.error('Error fetching chat rooms:', err);
+        throw new Error('Error fetching chat rooms');
+      }
+    },
     chatRoom: async (_, { id }) => {
       try {
         return await ChatRoom.findById(id).populate('members');
@@ -70,7 +78,6 @@ const resolvers = {
         if (existingUser) {
           throw new Error('Email already exists');
         }
-
         const user = new User(input);
         await user.save();
         return user;
@@ -81,6 +88,9 @@ const resolvers = {
     },
     updateUser: async (_, { id, input }) => {
       try {
+        if (input.password) {
+          input.password = await bcrypt.hash(input.password, 10);
+        }
         return await User.findByIdAndUpdate(id, input, { new: true });
       } catch (err) {
         console.error('Error updating user:', err);

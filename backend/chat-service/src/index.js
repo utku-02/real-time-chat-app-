@@ -13,6 +13,7 @@ const port = 3002;
 app.use(bodyParser.json());
 app.use(cors());
 
+app.get('/chats', chatController.getChatRooms);
 app.post('/chats', chatController.createChatRoom);
 app.get('/chats/:id', chatController.getChatRoom);
 app.put('/chats/:id', chatController.updateChatRoom);

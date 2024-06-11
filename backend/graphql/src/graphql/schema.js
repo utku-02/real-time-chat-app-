@@ -7,6 +7,7 @@ const typeDefs = gql`
     user(id: ID!): User
     userByEmail(email: String!): User
     userSettings(id: ID!): UserSettings
+    chatRooms: [ChatRoom]
     chatRoom(id: ID!): ChatRoom
     message(id: ID!): Message
     messagesByChatId(chatId: ID!): [Message]
@@ -14,9 +15,9 @@ const typeDefs = gql`
 
   type User {
     id: ID!
-    email: String
-    username: String
-    password: String
+    email: String!
+    username: String!
+    password: String!
     settings: UserSettings
   }
 
@@ -28,21 +29,21 @@ const typeDefs = gql`
 
   type ChatRoom {
     id: ID!
-    name: String
+    name: String!
     members: [User]
   }
 
   type Message {
     id: ID!
-    content: String
+    content: String!
     sender: User
     chatRoom: ChatRoom
   }
 
   input CreateUserInput {
-    email: String
-    username: String
-    password: String
+    email: String!
+    username: String!
+    password: String!
   }
 
   input UpdateUserInput {
@@ -58,7 +59,7 @@ const typeDefs = gql`
   }
 
   input CreateChatRoomInput {
-    name: String
+    name: String!
   }
 
   input UpdateChatRoomInput {
@@ -66,9 +67,9 @@ const typeDefs = gql`
   }
 
   input CreateMessageInput {
-    content: String
-    senderId: ID
-    chatRoomId: ID
+    content: String!
+    senderId: ID!
+    chatRoomId: ID!
   }
 
   type Mutation {
@@ -78,7 +79,7 @@ const typeDefs = gql`
     createChatRoom(input: CreateChatRoomInput): ChatRoom
     updateChatRoom(id: ID!, input: UpdateChatRoomInput): ChatRoom
     deleteChatRoom(id: ID!): Boolean
-    inviteUsersToChatRoom(id: ID!, users: [ID!]): ChatRoom
+    inviteUsersToChatRoom(id: ID!, users: [ID!]!): ChatRoom
     createMessage(input: CreateMessageInput): Message
   }
 `;

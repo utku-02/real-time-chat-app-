@@ -29,6 +29,24 @@
         return data.createChatRoom;
     };
 
+    exports.getChatRooms = async () => {
+        const query = gql`
+          query {
+            chatRooms {
+              id
+              name
+              members {
+                id
+                email
+                username
+              }
+            }
+          }
+        `;
+        const data = await client.request(query);
+        return data.chatRooms;
+      };
+
     exports.getChatRoom = async (id) => {
         const query = gql`
         query($id: ID!) {

@@ -7,6 +7,10 @@ exports.createChatRoom = async (chatRoomData) => {
     return chatRoom;
 };
 
+exports.getChatRooms = async () => {
+    return await chatRepository.getChatRooms();
+};
+
 exports.getChatRoom = async (id) => {
     return await chatRepository.getChatRoom(id);
 };

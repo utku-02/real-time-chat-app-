@@ -73,48 +73,4 @@ router.get('/:userId', authMiddleware.verifyToken, userServiceProxy.getUser);
  */
 router.put('/:userId', authMiddleware.verifyToken, userServiceProxy.updateUser);
 
-/**
- * @swagger
- * tags:
- *   name: Settings
- *   description: User settings endpoints
- */
-
-/**
- * @swagger
- * /settings:
- *   get:
- *     summary: Get user settings
- *     tags: [Settings]
- *     responses:
- *       200:
- *         description: User settings
- */
-router.get('/settings', authMiddleware.verifyToken, userServiceProxy.getSettings);
-
-/**
- * @swagger
- * /settings:
- *   put:
- *     summary: Update user settings
- *     tags: [Settings]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               notifications:
- *                 type: boolean
- *               privacy:
- *                 type: string
- *               theme:
- *                 type: string
- *     responses:
- *       200:
- *         description: User settings updated
- */
-router.put('/settings', authMiddleware.verifyToken, userServiceProxy.updateSettings);
-
 module.exports = router;
