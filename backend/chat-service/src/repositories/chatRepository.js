@@ -87,13 +87,11 @@
 
     exports.deleteChatRoom = async (id) => {
         const mutation = gql`
-        mutation($id: ID!) {
-            deleteChatRoom(id: $id) {
-                id
-            }
-        }
-    `;
-        const variables = { id };
+                    mutation($id: ID!) {
+                    deleteChatRoom(id: $id)
+                    }
+            `;
+            const variables = { id };
         await client.request(mutation, variables);
     };
 
