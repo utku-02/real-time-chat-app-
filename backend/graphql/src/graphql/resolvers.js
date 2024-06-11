@@ -1,8 +1,27 @@
+const { GraphQLScalarType, Kind } = require('graphql');
 const User = require('../models/User');
 const ChatRoom = require('../models/ChatRoom');
 const Message = require('../models/Message');
 
+const dateScalar = new GraphQLScalarType({
+  name: 'Date',
+  description: 'Date custom scalar type',
+  parseValue(value) {
+    return new Date(value); // value from the client input variables
+  },
+  serialize(value) {
+    return value.toISOString(); // value sent to the client
+  },
+  parseLiteral(ast) {
+    if (ast.kind === Kind.STRING) {
+      return new Date(ast.value); // ast value is always in string format
+    }
+    return null;
+  },
+});
+
 const resolvers = {
+  Date: dateScalar,
   Query: {
     healthCheck: () => 'OK',
     users: async () => {
@@ -27,15 +46,6 @@ const resolvers = {
       } catch (err) {
         console.error('Error fetching user by email:', err);
         throw new Error('Error fetching user by email');
-      }
-    },
-    userSettings: async (_, { id }) => {
-      try {
-        const user = await User.findById(id);
-        return user.settings;
-      } catch (err) {
-        console.error('Error fetching user settings:', err);
-        throw new Error('Error fetching user settings');
       }
     },
     chatRooms: async () => {
@@ -137,14 +147,35 @@ const resolvers = {
     },
     createMessage: async (_, { input }) => {
       try {
-        const message = new Message(input);
+        // Fetch the user and chat room using the IDs provided in the input
+        const sender = await User.findById(input.senderId);
+        const chatRoom = await ChatRoom.findById(input.chatRoomId);
+    
+        if (!sender || !chatRoom) {
+          throw new Error('Invalid sender or chat room');
+        }
+    
+        // Create the message object
+        const message = new Message({
+          content: input.content,
+          sender: sender._id,
+          chatRoom: chatRoom._id,
+          timestamp: input.timestamp || new Date()
+        });
+    
+        // Save the message
         await message.save();
-        return message.populate('sender').populate('chatRoom');
+    
+        // Populate sender and chat room fields
+        await message.populate('sender');
+        await message.populate('chatRoom');
+    
+        return message;
       } catch (err) {
         console.error('Error creating message:', err);
         throw new Error('Error creating message');
       }
-    }
+    } 
   }
 };
 

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 exports.sendMessage = async (req, res) => {
     try {
@@ -6,12 +7,21 @@ exports.sendMessage = async (req, res) => {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decodedToken.id;
 
+        if (!userId) {
+            throw new Error('Invalid token: User ID not found');
+        }
+
         const userResponse = await axios.get(`http://user-service:3001/users/${userId}`);
         const user = userResponse.data;
 
+        if (!user) {
+            throw new Error('User not found');
+        }
+
         const messageData = {
             ...req.body,
-            senderId: user.id
+            senderId: user.id,
+            timestamp: new Date()
         };
 
         const response = await axios.post('http://message-service:3003/messages', messageData);

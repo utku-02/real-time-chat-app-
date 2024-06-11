@@ -23,7 +23,7 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               chatId:
+ *               chatRoomId:
  *                 type: string
  *               content:
  *                 type: string

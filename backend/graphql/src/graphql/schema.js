@@ -1,12 +1,13 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+  scalar Date
+
   type Query {
     healthCheck: String
     users: [User]
     user(id: ID!): User
     userByEmail(email: String!): User
-    userSettings(id: ID!): UserSettings
     chatRooms: [ChatRoom]
     chatRoom(id: ID!): ChatRoom
     message(id: ID!): Message
@@ -18,7 +19,6 @@ const typeDefs = gql`
     email: String!
     username: String!
     password: String!
-    settings: UserSettings
   }
 
   type ChatRoom {
@@ -47,12 +47,6 @@ const typeDefs = gql`
     password: String
   }
 
-  input UpdateUserSettingsInput {
-    notifications: Boolean
-    privacy: String
-    theme: String
-  }
-
   input CreateChatRoomInput {
     name: String!
   }
@@ -71,7 +65,6 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput): User
     updateUser(id: ID!, input: UpdateUserInput): User
-    updateUserSettings(id: ID!, settings: UpdateUserSettingsInput): UserSettings
     createChatRoom(input: CreateChatRoomInput): ChatRoom
     updateChatRoom(id: ID!, input: UpdateChatRoomInput): ChatRoom
     deleteChatRoom(id: ID!): Boolean
