@@ -70,6 +70,7 @@
           id
           email
           username
+          password
         }
       }
     `;

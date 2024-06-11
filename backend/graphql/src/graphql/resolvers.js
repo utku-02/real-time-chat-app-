@@ -66,6 +66,11 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { input }) => {
       try {
+        const existingUser = await User.findOne({ email: input.email });
+        if (existingUser) {
+          throw new Error('Email already exists');
+        }
+
         const user = new User(input);
         await user.save();
         return user;

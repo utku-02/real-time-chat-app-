@@ -5,6 +5,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 exports.registerUser = async (userData) => {
+    const existingUser = await authRepository.getUserByEmail(userData.email);
+    if (existingUser) {
+        throw new Error('Email already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = await authRepository.createUser({ ...userData, password: hashedPassword });
     await producer.sendMessage('user.registered', user);
