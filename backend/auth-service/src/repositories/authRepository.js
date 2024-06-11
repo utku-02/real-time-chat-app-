@@ -17,6 +17,7 @@
                 id
                 email
                 username
+                password
             }
         }
     `;

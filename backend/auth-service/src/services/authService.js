@@ -13,7 +13,7 @@ exports.registerUser = async (userData) => {
 
 exports.loginUser = async ({ email, password }) => {
     const user = await authRepository.getUserByEmail(email);
-    if (!user || !await bcrypt.compare(password, user.password)) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
         throw new Error('Invalid email or password');
     }
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -42,5 +42,5 @@ exports.resetPassword = async (token, newPassword) => {
 };
 
 exports.healthCheck = async () => {
-  return await authRepository.healthCheck();
+    return await authRepository.healthCheck();
 };

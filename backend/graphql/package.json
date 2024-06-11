@@ -8,9 +8,10 @@
   },
   "dependencies": {
     "apollo-server": "^3.13.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "graphql": "^16.8.1",
     "graphql-request": "^7.0.1",
-    "cors": "^2.8.5",
     "mongoose": "^8.4.1"
   }
 }

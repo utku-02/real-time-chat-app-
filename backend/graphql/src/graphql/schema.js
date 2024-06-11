@@ -5,6 +5,7 @@ const typeDefs = gql`
     healthCheck: String
     users: [User]
     user(id: ID!): User
+    userByEmail(email: String!): User
     userSettings(id: ID!): UserSettings
     chatRoom(id: ID!): ChatRoom
     message(id: ID!): Message
@@ -15,6 +16,7 @@ const typeDefs = gql`
     id: ID!
     email: String
     username: String
+    password: String
     settings: UserSettings
   }
 
@@ -46,6 +48,7 @@ const typeDefs = gql`
   input UpdateUserInput {
     email: String
     username: String
+    password: String
   }
 
   input UpdateUserSettingsInput {

@@ -1,10 +1,20 @@
 const userRepository = require('../repositories/userRepository');
+const bcrypt = require('bcryptjs');
 
 exports.createUser = async (userData) => {
+  if (userData.password) {
+    userData.password = await bcrypt.hash(userData.password, 10);
+  }
   return await userRepository.createUser(userData);
 };
 
 exports.updateUser = async (id, userData) => {
+  if (userData.password) {
+    const existingUser = await userRepository.getUser(id);
+    if (existingUser.password !== userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+  }
   return await userRepository.updateUser(id, userData);
 };
 

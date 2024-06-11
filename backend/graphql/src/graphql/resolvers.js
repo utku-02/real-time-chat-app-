@@ -21,6 +21,14 @@ const resolvers = {
         throw new Error('Error fetching user');
       }
     },
+    userByEmail: async (_, { email }) => {
+      try {
+        return await User.findOne({ email });
+      } catch (err) {
+        console.error('Error fetching user by email:', err);
+        throw new Error('Error fetching user by email');
+      }
+    },
     userSettings: async (_, { id }) => {
       try {
         const user = await User.findById(id);

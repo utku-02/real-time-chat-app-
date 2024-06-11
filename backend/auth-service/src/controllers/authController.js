@@ -1,7 +1,6 @@
 const authService = require('../services/authService');
 const amqp = require('amqplib');
 const fetch = require('cross-fetch');
-
 global.fetch = global.fetch || fetch;
 
 exports.registerUser = async (req, res) => {
