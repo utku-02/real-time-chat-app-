@@ -97,17 +97,6 @@ const resolvers = {
         throw new Error('Error updating user');
       }
     },
-    updateUserSettings: async (_, { id, settings }) => {
-      try {
-        const user = await User.findById(id);
-        user.settings = settings;
-        await user.save();
-        return user.settings;
-      } catch (err) {
-        console.error('Error updating user settings:', err);
-        throw new Error('Error updating user settings');
-      }
-    },
     createChatRoom: async (_, { input }) => {
       try {
         const chatRoom = new ChatRoom(input);
@@ -120,7 +109,7 @@ const resolvers = {
     },
     updateChatRoom: async (_, { id, input }) => {
       try {
-        return await ChatRoom.findByIdAndUpdate(id, input, { new: true });
+        return await ChatRoom.findByIdAndUpdate(id, input, { new: true }).populate('members');
       } catch (err) {
         console.error('Error updating chat room:', err);
         throw new Error('Error updating chat room');
