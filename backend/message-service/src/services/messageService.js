@@ -2,6 +2,8 @@ const messageRepository = require('../repositories/messageRepository');
 const producer = require('../utils/producer');
 
 exports.createMessage = async (messageData) => {
+    messageData.timestamp = new Date();
+    
     const message = await messageRepository.createMessage(messageData);
     await producer.sendMessage('message.sent', message);
     return message;
@@ -20,5 +22,5 @@ exports.handleChatRoomJoined = async (chatRoom) => {
 };
 
 exports.healthCheck = async () => {
-  return await messageRepository.healthCheck();
+    return await messageRepository.healthCheck();
 };

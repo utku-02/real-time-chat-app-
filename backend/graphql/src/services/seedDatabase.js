@@ -41,9 +41,9 @@ const seedDatabase = async () => {
     console.log('Chat rooms seeded successfully');
     
     const messages = [
-      { content: 'Hello world', sender: createdUsers[0]._id, chatRoom: createdChatRooms[0]._id },
-      { content: 'Hi there', sender: createdUsers[1]._id, chatRoom: createdChatRooms[1]._id },
-      { content: 'Good morning', sender: createdUsers[2]._id, chatRoom: createdChatRooms[2]._id }
+      { content: 'Hello world', sender: createdUsers[0]._id, chatRoom: createdChatRooms[0]._id, timestamp: new Date() },
+      { content: 'Hi there', sender: createdUsers[1]._id, chatRoom: createdChatRooms[1]._id, timestamp: new Date() },
+      { content: 'Good morning', sender: createdUsers[2]._id, chatRoom: createdChatRooms[2]._id, timestamp: new Date() }
     ];
     
     await Message.insertMany(messages);

@@ -1,7 +1,6 @@
 const messageService = require('../services/messageService');
 const amqp = require('amqplib');
 const fetch = require('cross-fetch');
-
 global.fetch = global.fetch || fetch;
 
 exports.createMessage = async (req, res) => {
@@ -9,6 +8,7 @@ exports.createMessage = async (req, res) => {
         const message = await messageService.createMessage(req.body);
         res.status(201).json(message);
     } catch (err) {
+        console.error('Error in createMessage:', err.message);
         res.status(500).json({ error: err.message });
     }
 };
@@ -18,6 +18,7 @@ exports.getMessage = async (req, res) => {
         const message = await messageService.getMessage(req.params.id);
         res.status(200).json(message);
     } catch (err) {
+        console.error('Error in getMessage:', err.message);
         res.status(500).json({ error: err.message });
     }
 };
@@ -27,6 +28,7 @@ exports.getMessagesByChatId = async (req, res) => {
         const messages = await messageService.getMessagesByChatId(req.params.chatId);
         res.status(200).json(messages);
     } catch (err) {
+        console.error('Error in getMessagesByChatId:', err.message);
         res.status(500).json({ error: err.message });
     }
 };

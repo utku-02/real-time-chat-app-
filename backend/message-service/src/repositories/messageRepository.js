@@ -9,7 +9,7 @@
         Authorization: `Bearer ${process.env.JWT_TOKEN}`,
       },
     });
-
+  
     exports.createMessage = async (messageData) => {
         const mutation = gql`
         mutation($input: CreateMessageInput!) {
@@ -24,6 +24,7 @@
                     id
                     name
                 }
+                timestamp
             }
         }
     `;
@@ -31,7 +32,7 @@
         const data = await client.request(mutation, variables);
         return data.createMessage;
     };
-
+  
     exports.getMessage = async (id) => {
         const query = gql`
         query($id: ID!) {
@@ -46,6 +47,7 @@
                     id
                     name
                 }
+                timestamp
             }
         }
     `;
@@ -53,7 +55,7 @@
         const data = await client.request(query, variables);
         return data.message;
     };
-
+  
     exports.getMessagesByChatId = async (chatId) => {
         const query = gql`
         query($chatId: ID!) {
@@ -68,6 +70,7 @@
                     id
                     name
                 }
+                timestamp
             }
         }
     `;

@@ -37,7 +37,27 @@ router.post('/', authMiddleware.verifyToken, messageServiceProxy.sendMessage);
 
 /**
  * @swagger
- * /messages/{chatId}:
+ * /messages/{id}:
+ *   get:
+ *     summary: Get a message by ID
+ *     tags: [Messages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Message details
+ */
+router.get('/:id', authMiddleware.verifyToken, messageServiceProxy.getMessage);
+
+/**
+ * @swagger
+ * /messages/chat/{chatId}:
  *   get:
  *     summary: Get messages for a chat
  *     tags: [Messages]
@@ -53,6 +73,6 @@ router.post('/', authMiddleware.verifyToken, messageServiceProxy.sendMessage);
  *       200:
  *         description: List of messages
  */
-router.get('/:chatId', authMiddleware.verifyToken, messageServiceProxy.getMessages);
+router.get('/chat/:chatId', authMiddleware.verifyToken, messageServiceProxy.getMessagesByChatId);
 
 module.exports = router;

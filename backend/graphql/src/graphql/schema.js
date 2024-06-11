@@ -21,12 +21,6 @@ const typeDefs = gql`
     settings: UserSettings
   }
 
-  type UserSettings {
-    notifications: Boolean
-    privacy: String
-    theme: String
-  }
-
   type ChatRoom {
     id: ID!
     name: String!
@@ -36,7 +30,8 @@ const typeDefs = gql`
   type Message {
     id: ID!
     content: String!
-    sender: User
+    sender: User!
+    timestamp: Date!
     chatRoom: ChatRoom
   }
 
@@ -69,6 +64,7 @@ const typeDefs = gql`
   input CreateMessageInput {
     content: String!
     senderId: ID!
+    timestamp: Date!
     chatRoomId: ID!
   }
 
