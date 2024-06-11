@@ -12,12 +12,9 @@ const port = 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
-app.post('/users', userController.createUser);
+app.get('/users', userController.getUsers);
 app.put('/users/:id', userController.updateUser);
 app.get('/users/:id', userController.getUser);
-app.get('/users', userController.getUsers);
-app.get('/users/:id/settings', userController.getUserSettings);
-app.put('/users/:id/settings', userController.updateUserSettings);
 app.get('/healthz', userController.getHealthz);
 app.get('/readiness', userController.getReadiness);
 

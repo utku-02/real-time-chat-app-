@@ -11,21 +11,6 @@
     },
   });
 
-  exports.createUser = async (userData) => {
-    const mutation = gql`
-      mutation($input: CreateUserInput!) {
-        createUser(input: $input) {
-          id
-          email
-          username
-        }
-      }
-    `;
-    const variables = { input: userData };
-    const data = await client.request(mutation, variables);
-    return data.createUser;
-  };
-
   exports.updateUser = async (id, userData) => {
     if (userData.password) {
       const existingUser = await exports.getUser(id);
@@ -76,36 +61,6 @@
     `;
     const data = await client.request(query);
     return data.users;
-  };
-
-  exports.getUserSettings = async (id) => {
-    const query = gql`
-      query($id: ID!) {
-        userSettings(id: $id) {
-          notifications
-          privacy
-          theme
-        }
-      }
-    `;
-    const variables = { id };
-    const data = await client.request(query, variables);
-    return data.userSettings;
-  };
-
-  exports.updateUserSettings = async (id, settings) => {
-    const mutation = gql`
-      mutation($id: ID!, $settings: UpdateUserSettingsInput!) {
-        updateUserSettings(id: $id, settings: $settings) {
-          notifications
-          privacy
-          theme
-        }
-      }
-    `;
-    const variables = { id, settings };
-    const data = await client.request(mutation, variables);
-    return data.updateUserSettings;
   };
 
   exports.healthCheck = async () => {

@@ -76,48 +76,6 @@ router.put('/:userId', authMiddleware.verifyToken, userServiceProxy.updateUser);
 /**
  * @swagger
  * tags:
- *   name: Profile
- *   description: User profile endpoints
- */
-
-/**
- * @swagger
- * /profile:
- *   get:
- *     summary: Get user profile
- *     tags: [Profile]
- *     responses:
- *       200:
- *         description: User profile
- */
-router.get('/profile', authMiddleware.verifyToken, userServiceProxy.getProfile);
-
-/**
- * @swagger
- * /profile:
- *   put:
- *     summary: Update user profile
- *     tags: [Profile]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               username:
- *                 type: string
- *     responses:
- *       200:
- *         description: User profile updated
- */
-router.put('/profile', authMiddleware.verifyToken, userServiceProxy.updateProfile);
-
-/**
- * @swagger
- * tags:
  *   name: Settings
  *   description: User settings endpoints
  */
